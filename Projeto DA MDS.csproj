@@ -57,6 +57,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="IshoppingContext.cs" />
+    <Compile Include="IshoppingDbInitializer.cs" />
+    <Compile Include="Models\Artigo.cs" />
+    <Compile Include="Models\ItemCompra.cs" />
+    <Compile Include="Models\ItemNaoPrevisto.cs" />
+    <Compile Include="Models\ItemPrevisto.cs" />
+    <Compile Include="Models\ListaCompra.cs" />
+    <Compile Include="Models\Orcamento.cs" />
+    <Compile Include="Models\TipoArtigo.cs" />
     <Compile Include="Views\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

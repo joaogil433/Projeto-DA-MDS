@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Projeto_DA_MDS.Views;
+using System.Data.Entity;
 
 namespace Projeto_DA_MDS
 {
@@ -17,6 +18,14 @@ namespace Projeto_DA_MDS
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Database.SetInitializer(new IshoppingDbInitializer());
+
+            using (var db = new IshoppingContext())
+            {
+                db.Database.Initialize(true);
+            }
+
             Application.Run(new FormLogin());
         }
     }
