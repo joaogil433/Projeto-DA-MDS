@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Projeto_DA_MDS;
+using Projeto_DA_MDS.Models;
 
 namespace Projeto_DA_MDS.Views
 {
@@ -15,6 +17,7 @@ namespace Projeto_DA_MDS.Views
         public FormLogin()
         {
             InitializeComponent();
+            tabControl1.SelectedTab = tabPage2;
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -27,22 +30,69 @@ namespace Projeto_DA_MDS.Views
 
         }
 
+
+
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = tbUsername.Text;
-            string password = tbPassword.Text;
-
-            if (username == "admin" && password == "admin")
+            using (var db = new IshoppingContext())
             {
-                Form1 form = new Form1();
-                form.ShowDialog();
+                var utilizadorRegisto = db.Utilizadores.FirstOrDefault(u => u.Username == tbUsername.Text && u.Password == tbPassword.Text);
 
-                this.Close();
+                if (utilizadorRegisto != null)
+                {
+                    MessageBox.Show("Sessão inicada com sucesso!");
+                    Form1 form = new Form1();
+                    form.ShowDialog();
+
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Dados Inválidos!");
+
+                    tbUsername.Clear();
+                    tbPassword.Clear();
+                    tbUsername.Focus();
+                }
             }
-            else
+        }
+
+        private void btnRegisto_Click(object sender, EventArgs e)
+        {
+            using (var db = new IshoppingContext())
             {
-                MessageBox.Show("Dados Inválidos!");
+                if(db.Utilizadores.Any(u => u.Username == tbUsername.Text))
+                {
+                    MessageBox.Show("Esse nome de utilizador já se encontra em uso!");
+                    return;
+                }
+
+                var novoUser = new Utilizador
+                {
+                    Nome = tbNomeReg.Text,
+                    Username = tbUsernameReg.Text,
+                    Password = tbPasswordReg.Text
+                };
+
+                db.Utilizadores.Add(novoUser);
+                db.SaveChanges();
+
+                MessageBox.Show("Utilizador registado com sucesso!");
+
+                tbUsernameReg.Clear();
+                tbPasswordReg.Clear();
+                tabControl1.SelectedTab = tabPage2;
             }
+        }
+
+        private void tbUsername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
