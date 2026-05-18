@@ -41,6 +41,7 @@ namespace Projeto_DA_MDS.Views
                 if (utilizadorRegisto != null)
                 {
                     MessageBox.Show("Sessão inicada com sucesso!");
+                    SessaoUtilizador.Atual = utilizadorRegisto;
                     Form1 form = new Form1();
                     form.ShowDialog();
 
@@ -49,7 +50,6 @@ namespace Projeto_DA_MDS.Views
                 else
                 {
                     MessageBox.Show("Dados Inválidos!");
-
                     tbUsername.Clear();
                     tbPassword.Clear();
                     tbUsername.Focus();
