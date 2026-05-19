@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Projeto_DA_MDS;
+using Projeto_DA_MDS.Controllers;
+using Projeto_DA_MDS.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,8 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Projeto_DA_MDS;
-using Projeto_DA_MDS.Models;
+using Projeto_DA_MDS.Helpers;
 
 namespace Projeto_DA_MDS.Views
 {
@@ -36,9 +38,9 @@ namespace Projeto_DA_MDS.Views
         {
             using (var db = new IshoppingContext())
             {
-                var utilizadorRegisto = db.Utilizadores.FirstOrDefault(u => u.Username == tbUsername.Text && u.Password == tbPassword.Text);
+                var utilizador = LoginController.Login(tbUsername.Text, tbPassword.Text);
 
-                if (utilizadorRegisto != null)
+                if (utilizador != null)
                 {
                     MessageBox.Show("Sessão inicada com sucesso!");
                     Form1 form = new Form1();
@@ -61,7 +63,7 @@ namespace Projeto_DA_MDS.Views
         {
             using (var db = new IshoppingContext())
             {
-                if(db.Utilizadores.Any(u => u.Username == tbUsername.Text))
+                if(db.Utilizadores.Any(u => u.Username == tbUsernameReg.Text))
                 {
                     MessageBox.Show("Esse nome de utilizador já se encontra em uso!");
                     return;
@@ -71,7 +73,7 @@ namespace Projeto_DA_MDS.Views
                 {
                     Nome = tbNomeReg.Text,
                     Username = tbUsernameReg.Text,
-                    Password = tbPasswordReg.Text
+                    Password = HashHelper.HashPassword(tbPasswordReg.Text)
                 };
 
                 db.Utilizadores.Add(novoUser);
@@ -91,6 +93,11 @@ namespace Projeto_DA_MDS.Views
         }
 
         private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbNomeReg_TextChanged(object sender, EventArgs e)
         {
 
         }

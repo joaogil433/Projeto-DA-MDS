@@ -163,6 +163,7 @@
             this.tbNomeReg.Name = "tbNomeReg";
             this.tbNomeReg.Size = new System.Drawing.Size(170, 30);
             this.tbNomeReg.TabIndex = 11;
+            this.tbNomeReg.TextChanged += new System.EventHandler(this.tbNomeReg_TextChanged);
             // 
             // label6
             // 
