@@ -101,7 +101,7 @@
             // 
             this.btnRegisto.Location = new System.Drawing.Point(84, 249);
             this.btnRegisto.Name = "btnRegisto";
-            this.btnRegisto.Size = new System.Drawing.Size(88, 35);
+            this.btnRegisto.Size = new System.Drawing.Size(104, 35);
             this.btnRegisto.TabIndex = 5;
             this.btnRegisto.Text = "Registar";
             this.btnRegisto.UseVisualStyleBackColor = true;
@@ -163,6 +163,7 @@
             this.tbNomeReg.Name = "tbNomeReg";
             this.tbNomeReg.Size = new System.Drawing.Size(170, 30);
             this.tbNomeReg.TabIndex = 11;
+            this.tbNomeReg.TextChanged += new System.EventHandler(this.tbNomeReg_TextChanged);
             // 
             // label6
             // 

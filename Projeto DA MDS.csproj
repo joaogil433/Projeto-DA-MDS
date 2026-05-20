@@ -60,6 +60,7 @@
     <Compile Include="Controllers\ListaCompraController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OrcamentoController.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="IshoppingContext.cs" />
     <Compile Include="IshoppingDbInitializer.cs" />
     <Compile Include="Models\Artigo.cs" />
