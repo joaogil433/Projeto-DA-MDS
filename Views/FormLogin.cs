@@ -41,7 +41,7 @@ namespace Projeto_DA_MDS.Views
                 if (utilizadorRegisto != null)
                 {
                     MessageBox.Show("Sessão inicada com sucesso!");
-                    Form1 form = new Form1();
+                    FormPrincipal form = new FormPrincipal();
                     form.ShowDialog();
 
                     this.Close();
