@@ -66,8 +66,8 @@
     <Compile Include="Models\ItemPrevisto.cs" />
     <Compile Include="Models\ListaCompra.cs" />
     <Compile Include="Models\Orcamento.cs" />
+    <Compile Include="Models\SessaoUtilizador.cs" />
     <Compile Include="Models\TipoArtigo.cs" />
-    <Compile Include="SessaoUtilizador.cs" />
     <Compile Include="Views\Form1.cs">
       <SubType>Form</SubType>
     </Compile>

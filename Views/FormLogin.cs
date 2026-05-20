@@ -43,8 +43,8 @@ namespace Projeto_DA_MDS.Views
                 if (utilizador != null)
                 {
                     MessageBox.Show("Sessão inicada com sucesso!");
-                    SessaoUtilizador.Atual = utilizadorRegisto;
-                    Form1 form = new Form1();
+                    SessaoUtilizador.Atual = utilizador;
+                    FormModoCompra form = new FormModoCompra();
                     form.ShowDialog();
 
                     this.Close();

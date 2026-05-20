@@ -20,15 +20,10 @@ namespace Projeto_DA_MDS
                 db.Database.Initialize(false);
             }
 
-            // Criamos um objeto de lista em memória apenas para o teu construtor aceitar
-            var listaTeste = new Models.ListaCompra
-            {
-                Id = 1,
-                Estado = "Aberta"
-            };
+
 
             // Abre o teu formulário diretamente!
-            Application.Run(new Views.FormModoCompra(listaTeste));
+            Application.Run(new Views.FormLogin());
         }
     }
 }
