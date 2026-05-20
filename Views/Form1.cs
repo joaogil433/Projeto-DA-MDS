@@ -7,19 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Projeto_DA_MDS;
 
 namespace Projeto_DA_MDS
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
+        // O Form_Load fica vazio (ou podes apagá-lo se não estiver associado a nada)
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            // Deixa isto vazio
         }
+
+       
     }
-}
+
+ 
+
+    }

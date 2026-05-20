@@ -1,32 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Projeto_DA_MDS.Views;
 using System.Data.Entity;
+using System.Windows.Forms;
+using System.Linq;
 
 namespace Projeto_DA_MDS
 {
-    internal static class Program
+    static class Program
     {
-        /// <summary>
-        /// Ponto de entrada principal para o aplicativo.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Database.SetInitializer(new IshoppingDbInitializer());
-
+            // Inicializa apenas o contexto básico
+            Database.SetInitializer(new CreateDatabaseIfNotExists<IshoppingContext>());
             using (var db = new IshoppingContext())
             {
-                db.Database.Initialize(true);
+                db.Database.Initialize(false);
             }
 
-            Application.Run(new FormLogin());
+            // Criamos um objeto de lista em memória apenas para o teu construtor aceitar
+            var listaTeste = new Models.ListaCompra
+            {
+                Id = 1,
+                Estado = "Aberta"
+            };
+
+            // Abre o teu formulário diretamente!
+            Application.Run(new Views.FormModoCompra(listaTeste));
         }
     }
 }

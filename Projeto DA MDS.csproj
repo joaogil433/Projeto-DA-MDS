@@ -67,6 +67,7 @@
     <Compile Include="Models\ListaCompra.cs" />
     <Compile Include="Models\Orcamento.cs" />
     <Compile Include="Models\TipoArtigo.cs" />
+    <Compile Include="SessaoUtilizador.cs" />
     <Compile Include="Views\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +83,12 @@
     <Compile Include="Views\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormModoCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormModoCompra.Designer.cs">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -96,6 +103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormModoCompra.resx">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
