@@ -1,3 +1,9 @@
 obj/
 .vs/
 bin/
+*.sgp~
+*~
+*.tmp
+*.user
+*.suo
+packages/
