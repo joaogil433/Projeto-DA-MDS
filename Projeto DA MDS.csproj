@@ -56,7 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ArtigoController.cs" />
+    <Compile Include="Controllers\ListaCompraController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OrcamentoController.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="IshoppingContext.cs" />
     <Compile Include="IshoppingDbInitializer.cs" />
@@ -68,11 +71,30 @@
     <Compile Include="Models\Orcamento.cs" />
     <Compile Include="Models\SessaoUtilizador.cs" />
     <Compile Include="Models\TipoArtigo.cs" />
-    <Compile Include="Views\Form1.cs">
+    <Compile Include="Sessao.cs" />
+    <Compile Include="Views\FormCriacaoEdicaoCompra.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Views\FormCriacaoEdicaoCompra.Designer.cs">
+      <DependentUpon>FormCriacaoEdicaoCompra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoArtigos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoArtigos.Designer.cs">
+      <DependentUpon>FormGestaoArtigos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoOrcamentos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoOrcamentos.Designer.cs">
+      <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormPlaneamentoCompras.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPlaneamentoCompras.Designer.cs">
+      <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -83,11 +105,19 @@
     <Compile Include="Views\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+<<<<<<< HEAD
     <Compile Include="Views\FormModoCompra.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\FormModoCompra.Designer.cs">
       <DependentUpon>FormModoCompra.cs</DependentUpon>
+=======
+    <Compile Include="Views\FormPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPrincipal.Designer.cs">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+>>>>>>> origin/feature/duarte-artigos-orcamentos-planeamento
     </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -98,14 +128,28 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Views\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Views\FormCriacaoEdicaoCompra.resx">
+      <DependentUpon>FormCriacaoEdicaoCompra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoArtigos.resx">
+      <DependentUpon>FormGestaoArtigos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoOrcamentos.resx">
+      <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPlaneamentoCompras.resx">
+      <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
+<<<<<<< HEAD
     <EmbeddedResource Include="Views\FormModoCompra.resx">
       <DependentUpon>FormModoCompra.cs</DependentUpon>
+=======
+    <EmbeddedResource Include="Views\FormPrincipal.resx">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+>>>>>>> origin/feature/duarte-artigos-orcamentos-planeamento
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
