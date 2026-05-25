@@ -80,30 +80,7 @@ namespace Projeto_DA_MDS.Views
             if (_listaCompra.Itens == null)
                 _listaCompra.Itens = new List<ItemCompra>();
 
-            // 4. Injeta itens simulados se a lista estiver vazia
-            if (_listaCompra.Itens.Count == 0)
-            {
-                var item1 = new ItemPrevisto
-                {
-                    Id = 1,
-                    Artigo = new Artigo { Nome = "Leite Meio Gordo" },
-                    QuantidadePrevista = 3,
-                    QuantidadeAdquirida = 0,
-                    PrecoUnitario = 0.95m
-                };
-
-                var item2 = new ItemPrevisto
-                {
-                    Id = 2,
-                    Artigo = new Artigo { Nome = "Chocolate Milka" },
-                    QuantidadePrevista = 1,
-                    QuantidadeAdquirida = 1,
-                    PrecoUnitario = 2.50m
-                };
-
-                _listaCompra.Itens.Add(item1);
-                _listaCompra.Itens.Add(item2);
-            }
+            
 
             // 5. Desenha tudo no ecrã
             PopularTabelaManual();
@@ -223,8 +200,8 @@ namespace Projeto_DA_MDS.Views
             var artigo = (Artigo)cmbArtigo.SelectedItem;
 
             int utilizadorIdAtual = 1;
-            if (SessaoUtilizador.Atual != null)
-                utilizadorIdAtual = SessaoUtilizador.Atual.Id;
+            if (Sessao.UtilizadorAtual != null)
+                utilizadorIdAtual = Sessao.UtilizadorAtual.Id;
 
             var novoItem = new ItemNaoPrevisto
             {
@@ -282,12 +259,13 @@ namespace Projeto_DA_MDS.Views
             var lista = _db.ListasCompras.Find(_listaCompra.Id);
             lista.Estado = "Fechada";
             lista.DataFecho = DateTime.Now;
-            lista.UtilizadorAlterouId = SessaoUtilizador.Atual.Id;
+            lista.UtilizadorAlterouId = Sessao.UtilizadorAtual.Id;
             lista.DataAlteracao = DateTime.Now;
 
             _db.SaveChanges();
+            
 
-            MessageBox.Show($"Compra fechada em {lista.DataFecho:dd/MM/yyyy HH:mm} por {SessaoUtilizador.Atual.Username}.");
+            MessageBox.Show($"Compra fechada em {lista.DataFecho:dd/MM/yyyy HH:mm} por {Sessao.UtilizadorAtual.Username}.");
             this.Close();
         }
 

@@ -115,8 +115,10 @@
             this.dgvCompras.ReadOnly = true;
             this.dgvCompras.RowHeadersWidth = 51;
             this.dgvCompras.RowTemplate.Height = 24;
+            this.dgvCompras.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvCompras.Size = new System.Drawing.Size(389, 212);
             this.dgvCompras.TabIndex = 6;
+            this.dgvCompras.SelectionChanged += new System.EventHandler(this.dgvCompras_SelectionChanged);
             // 
             // btnNova
             // 

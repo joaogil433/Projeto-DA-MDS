@@ -30,6 +30,7 @@ namespace Projeto_DA_MDS.Views
                 dgvComprasAbertas.Columns.Clear();
 
                 DataGridViewTextBoxColumn colId = new DataGridViewTextBoxColumn();
+                colId.Name = "Id";
                 colId.DataPropertyName = "Id";
                 colId.HeaderText = "ID";
                 colId.Visible = false;
@@ -82,11 +83,12 @@ namespace Projeto_DA_MDS.Views
             int id = (int)dgvComprasAbertas.SelectedRows[0].Cells["Id"].Value;
 
             // TODO: descomentar quando o FormModoCompra (Pessoa 3 - Rafael) estiver criado
-            // FormModoCompra form = new FormModoCompra(id);
-            // form.FormClosed += new FormClosedEventHandler(SubForm_FormClosed);
-            // form.ShowDialog();
+            ListaCompra lista = listaCtrl.GetById(id);
+            FormModoCompra form = new FormModoCompra(lista);
+            form.FormClosed += new FormClosedEventHandler(SubForm_FormClosed);
+            form.ShowDialog();
 
-            MessageBox.Show("Modo Compra ainda não implementado (Pessoa 3).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
         }
 
         private void SubForm_FormClosed(object sender, FormClosedEventArgs e)
