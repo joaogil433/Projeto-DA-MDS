@@ -147,5 +147,16 @@ namespace Projeto_DA_MDS.Views
         {
             AbrirModoCompra();
         }
+
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tipoDeArtigoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FormGestaoTipoArtigo form = new FormGestaoTipoArtigo();
+            form.ShowDialog();
+        }
     }
 }

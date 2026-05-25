@@ -60,6 +60,7 @@
     <Compile Include="Controllers\ListaCompraController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OrcamentoController.cs" />
+    <Compile Include="Controllers\TipoArtigoController.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="IshoppingContext.cs" />
     <Compile Include="IshoppingDbInitializer.cs" />
@@ -90,6 +91,12 @@
     <Compile Include="Views\FormGestaoOrcamentos.Designer.cs">
       <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormGestaoTipoArtigo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoTipoArtigo.Designer.cs">
+      <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormPlaneamentoCompras.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,12 +112,12 @@
     <Compile Include="Views\FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
-	  <Compile Include="Views\FormPrincipal.cs">
-		  <SubType>Form</SubType>
-	  </Compile>
-	  <Compile Include="Views\FormPrincipal.Designer.cs">
-		  <DependentUpon>FormPrincipal.cs</DependentUpon>
-	  </Compile>
+    <Compile Include="Views\FormPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPrincipal.Designer.cs">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -129,15 +136,18 @@
     <EmbeddedResource Include="Views\FormGestaoOrcamentos.resx">
       <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoTipoArtigo.resx">
+      <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\FormPlaneamentoCompras.resx">
       <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
-	  <EmbeddedResource Include="Views\FormPrincipal.resx">
-		  <DependentUpon>FormPrincipal.cs</DependentUpon>
-	  </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPrincipal.resx">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

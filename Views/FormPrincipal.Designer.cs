@@ -33,7 +33,6 @@
             this.utilizadoresToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.artigosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orçamentosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.planeamentoDeComprasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.estatísticasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sairToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,6 +40,7 @@
             this.lblTitulo = new System.Windows.Forms.Label();
             this.dgvComprasAbertas = new System.Windows.Forms.DataGridView();
             this.btnAbrirModoCompra = new System.Windows.Forms.Button();
+            this.tipoDeArtigoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComprasAbertas)).BeginInit();
             this.SuspendLayout();
@@ -64,8 +64,8 @@
             this.utilizadoresToolStripMenuItem,
             this.artigosToolStripMenuItem,
             this.orçamentosToolStripMenuItem,
-            this.toolStripMenuItem2,
-            this.planeamentoDeComprasToolStripMenuItem});
+            this.planeamentoDeComprasToolStripMenuItem,
+            this.tipoDeArtigoToolStripMenuItem});
             this.gestãoToolStripMenuItem.Name = "gestãoToolStripMenuItem";
             this.gestãoToolStripMenuItem.Size = new System.Drawing.Size(73, 24);
             this.gestãoToolStripMenuItem.Text = "Gestão ";
@@ -90,12 +90,6 @@
             this.orçamentosToolStripMenuItem.Size = new System.Drawing.Size(263, 26);
             this.orçamentosToolStripMenuItem.Text = "Orçamentos";
             this.orçamentosToolStripMenuItem.Click += new System.EventHandler(this.orcamentosToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(263, 26);
-            this.toolStripMenuItem2.Text = "─────────────";
             // 
             // planeamentoDeComprasToolStripMenuItem
             // 
@@ -159,6 +153,13 @@
             this.btnAbrirModoCompra.UseVisualStyleBackColor = false;
             this.btnAbrirModoCompra.Click += new System.EventHandler(this.btnAbrirModoCompra_Click);
             // 
+            // tipoDeArtigoToolStripMenuItem
+            // 
+            this.tipoDeArtigoToolStripMenuItem.Name = "tipoDeArtigoToolStripMenuItem";
+            this.tipoDeArtigoToolStripMenuItem.Size = new System.Drawing.Size(263, 26);
+            this.tipoDeArtigoToolStripMenuItem.Text = "Tipo de Artigo";
+            this.tipoDeArtigoToolStripMenuItem.Click += new System.EventHandler(this.tipoDeArtigoToolStripMenuItem_Click);
+            // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -187,7 +188,6 @@
         private System.Windows.Forms.ToolStripMenuItem utilizadoresToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem artigosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem orçamentosToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.ToolStripMenuItem planeamentoDeComprasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem estatísticasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sairToolStripMenuItem;
@@ -195,5 +195,6 @@
         private System.Windows.Forms.Label lblTitulo;
         private System.Windows.Forms.DataGridView dgvComprasAbertas;
         private System.Windows.Forms.Button btnAbrirModoCompra;
+        private System.Windows.Forms.ToolStripMenuItem tipoDeArtigoToolStripMenuItem;
     }
 }
