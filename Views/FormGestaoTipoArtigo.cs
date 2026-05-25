@@ -135,7 +135,38 @@ namespace Projeto_DA_MDS.Views
 
         private void btnEliminar_Click(object sender, EventArgs e)
         {
-            ModoLeitura();
+            if (dataGridViewTipos.SelectedRows.Count == 0) return;
+
+            int id = (int)dataGridViewTipos.SelectedRows[0].Cells["Id"].Value;
+            string nomeTipo = dataGridViewTipos.SelectedRows[0].Cells[1].Value.ToString();
+
+            DialogResult confirmacao = MessageBox.Show(
+                "Eliminar o tipo de artigo \"" + nomeTipo + "\"?\n\nNão é possível eliminar se existirem artigos associados.",
+                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+            if (confirmacao == DialogResult.Yes)
+            {
+                try
+                {
+                    string mensagem = "";
+                    bool sucesso = tipoCtrl.Delete(id, out mensagem);
+
+                    if (sucesso)
+                    {
+                        ModoLeitura();
+                        CarregarTipos();
+                        MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show(mensagem, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Erro inesperado: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
@@ -174,38 +205,7 @@ namespace Projeto_DA_MDS.Views
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            if (dataGridViewTipos.SelectedRows.Count == 0) return;
-
-            int id = (int)dataGridViewTipos.SelectedRows[0].Cells["Id"].Value;
-            string nomeTipo = dataGridViewTipos.SelectedRows[0].Cells["Tipo de Artigo"].Value.ToString();
-
-            DialogResult confirmacao = MessageBox.Show(
-                "Eliminar o tipo de artigo \"" + nomeTipo + "\"?\n\nNão é possível eliminar se existirem artigos associados.",
-                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (confirmacao == DialogResult.Yes)
-            {
-                try
-                {
-                    string mensagem = "";
-                    bool sucesso = tipoCtrl.Delete(id, out mensagem);
-
-                    if (sucesso)
-                    {
-                        ModoLeitura();
-                        CarregarTipos();
-                        MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                    else
-                    {
-                        MessageBox.Show(mensagem, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Erro inesperado: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
+            ModoLeitura() ;
         }
 
         private void dataGridViewTipos_CellDoubleClick(object sender, EventArgs e)

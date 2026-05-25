@@ -36,12 +36,12 @@ namespace Projeto_DA_MDS.Views
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            using (var db = new IshoppingContext())
-            {
+            
                 var utilizador = LoginController.Login(tbUsername.Text, tbPassword.Text);
 
                 if (utilizador != null)
                 {
+                    Sessao.UtilizadorAtual = utilizador;
                     MessageBox.Show("Sessão inicada com sucesso!");
                     FormPrincipal form = new FormPrincipal();
                     form.ShowDialog();
@@ -55,14 +55,22 @@ namespace Projeto_DA_MDS.Views
                     tbPassword.Clear();
                     tbUsername.Focus();
                 }
-            }
+                
+            
         }
 
         private void btnRegisto_Click(object sender, EventArgs e)
         {
             using (var db = new IshoppingContext())
             {
-                if(db.Utilizadores.Any(u => u.Username == tbUsernameReg.Text))
+                if (string.IsNullOrWhiteSpace(tbNomeReg.Text) ||
+                    string.IsNullOrWhiteSpace(tbUsernameReg.Text) ||
+                    string.IsNullOrWhiteSpace(tbPasswordReg.Text))
+                {
+                    MessageBox.Show("Preenche todos os campos.");
+                    return;
+                }
+                if (db.Utilizadores.Any(u => u.Username == tbUsernameReg.Text))
                 {
                     MessageBox.Show("Esse nome de utilizador já se encontra em uso!");
                     return;
