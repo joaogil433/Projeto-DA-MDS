@@ -29,10 +29,22 @@ namespace Projeto_DA_MDS
                 .HasForeignKey(l => l.UtilizadorCriouId)
                 .WillCascadeOnDelete(false);
 
+            modelBuilder.Entity<ListaCompra>()
+                .HasOptional(l => l.UtilizadorAlterou)
+                .WithMany()
+                .HasForeignKey(l => l.UtilizadorAlterouId)
+                .WillCascadeOnDelete(false);
+
             modelBuilder.Entity<Orcamento>()
                 .HasRequired(o => o.UtilizadorCriou)
                 .WithMany(u => u.Orcamentos)
                 .HasForeignKey(o => o.UtilizadorCriouId)
+                .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Orcamento>()
+                .HasOptional(o => o.UtilizadorAlterou)
+                .WithMany()
+                .HasForeignKey(o => o.UtilizadorAlterouId)
                 .WillCascadeOnDelete(false);
 
             base.OnModelCreating(modelBuilder);
