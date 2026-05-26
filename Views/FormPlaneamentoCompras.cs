@@ -27,13 +27,6 @@ namespace Projeto_DA_MDS.Views
             // Seleciona "Todos" por omissão
             cmbFiltroEstado.SelectedIndex = 0;
 
-            btnNova.Click += new EventHandler(btnNova_Click);
-            btnEditarVer.Click += new EventHandler(btnEditarVer_Click);
-            btnEliminar.Click += new EventHandler(btnEliminar_Click);
-            btnFiltrar.Click += new EventHandler(btnFiltrar_Click);
-            dgvCompras.SelectionChanged += new EventHandler(dgvCompras_SelectionChanged);
-            dgvCompras.DoubleClick += new EventHandler(dgvCompras_DoubleClick);
-
             // Carrega todas as compras na grelha
             CarregarCompras();
         }
@@ -65,18 +58,21 @@ namespace Projeto_DA_MDS.Views
 
                 // Id escondido — necessário para identificar a linha no CRUD
                 DataGridViewTextBoxColumn colId = new DataGridViewTextBoxColumn();
+                colId.Name = "Id";
                 colId.DataPropertyName = "Id";
                 colId.HeaderText = "ID";
                 colId.Visible = false;
 
                 // Nome da compra
                 DataGridViewTextBoxColumn colNome = new DataGridViewTextBoxColumn();
+                colNome.Name = "Nome";
                 colNome.DataPropertyName = "Nome";
                 colNome.HeaderText = "Nome da Compra";
                 colNome.FillWeight = 200;
 
                 // Estado ("Aberta" ou "Fechada")
                 DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn();
+                colEstado.Name = "Estado";
                 colEstado.DataPropertyName = "Estado";
                 colEstado.HeaderText = "Estado";
                 colEstado.FillWeight = 80;
@@ -251,7 +247,7 @@ namespace Projeto_DA_MDS.Views
             }
 
             int id = (int)dgvCompras.SelectedRows[0].Cells["Id"].Value;
-            string nomeCompra = dgvCompras.SelectedRows[0].Cells["Nome da Compra"].Value.ToString();
+            string nomeCompra = dgvCompras.SelectedRows[0].Cells["Nome"].Value.ToString();
             string estado = dgvCompras.SelectedRows[0].Cells["Estado"].Value.ToString();
 
             // Regra de negócio: não é possível eliminar compras fechadas

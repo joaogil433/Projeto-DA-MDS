@@ -61,6 +61,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\OrcamentoController.cs" />
     <Compile Include="Controllers\TipoArtigoController.cs" />
+    <Compile Include="Controllers\UtilizadorController.cs" />
     <Compile Include="Helpers\HashHelper.cs" />
     <Compile Include="IshoppingContext.cs" />
     <Compile Include="IshoppingDbInitializer.cs" />
@@ -95,6 +96,12 @@
     </Compile>
     <Compile Include="Views\FormGestaoTipoArtigo.Designer.cs">
       <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormModoCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormModoCompra.Designer.cs">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\FormPlaneamentoCompras.cs">
       <SubType>Form</SubType>
@@ -137,6 +144,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormGestaoTipoArtigo.resx">
       <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormModoCompra.resx">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormPlaneamentoCompras.resx">
       <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>

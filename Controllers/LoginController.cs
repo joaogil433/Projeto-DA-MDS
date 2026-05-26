@@ -10,7 +10,7 @@ namespace Projeto_DA_MDS.Controllers
 {
     internal class LoginController
     {
-        public static Utilizador Login(string username, string password)
+        public Utilizador Login(string username, string password)
         {
             string passwordHash = HashHelper.HashPassword(password);
 
