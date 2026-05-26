@@ -14,7 +14,7 @@ namespace Projeto_DA_MDS
             Application.SetCompatibleTextRenderingDefault(false);
 
             // Inicializa apenas o contexto básico
-            Database.SetInitializer(new CreateDatabaseIfNotExists<IshoppingContext>());
+            Database.SetInitializer(new IshoppingDbInitializer());
             using (var db = new IshoppingContext())
             {
                 db.Database.Initialize(false);

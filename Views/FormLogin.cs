@@ -16,9 +16,11 @@ namespace Projeto_DA_MDS.Views
 {
     public partial class FormLogin : Form
     {
+        private LoginController loginCtrl;
         public FormLogin()
         {
             InitializeComponent();
+            loginCtrl = new LoginController();
             tabControl1.SelectedTab = tabPage2;
         }
 
@@ -36,61 +38,48 @@ namespace Projeto_DA_MDS.Views
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            
-                var utilizador = LoginController.Login(tbUsername.Text, tbPassword.Text);
 
-                if (utilizador != null)
-                {
-                    Sessao.UtilizadorAtual = utilizador;
-                    MessageBox.Show("Sessão inicada com sucesso!");
-                    FormPrincipal form = new FormPrincipal();
-                    form.ShowDialog();
+            Utilizador utilizador = loginCtrl.Login(tbUsername.Text, tbPassword.Text);
 
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Dados Inválidos!");
-                    tbUsername.Clear();
-                    tbPassword.Clear();
-                    tbUsername.Focus();
-                }
-                
-            
+            if (utilizador != null)
+            {
+                Sessao.UtilizadorAtual = utilizador;
+                FormPrincipal form = new FormPrincipal();
+                form.ShowDialog();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Username ou password incorretos.", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tbUsername.Clear();
+                tbPassword.Clear();
+                tbUsername.Focus();
+            }
+
+
         }
 
         private void btnRegisto_Click(object sender, EventArgs e)
         {
-            using (var db = new IshoppingContext())
+            UtilizadorController utilizadorCtrl = new UtilizadorController();
+
+            bool sucesso = utilizadorCtrl.Add(tbNomeReg.Text, tbUsernameReg.Text, tbPasswordReg.Text);
+
+            if (sucesso)
             {
-                if (string.IsNullOrWhiteSpace(tbNomeReg.Text) ||
-                    string.IsNullOrWhiteSpace(tbUsernameReg.Text) ||
-                    string.IsNullOrWhiteSpace(tbPasswordReg.Text))
-                {
-                    MessageBox.Show("Preenche todos os campos.");
-                    return;
-                }
-                if (db.Utilizadores.Any(u => u.Username == tbUsernameReg.Text))
-                {
-                    MessageBox.Show("Esse nome de utilizador já se encontra em uso!");
-                    return;
-                }
-
-                var novoUser = new Utilizador
-                {
-                    Nome = tbNomeReg.Text,
-                    Username = tbUsernameReg.Text,
-                    Password = HashHelper.HashPassword(tbPasswordReg.Text)
-                };
-
-                db.Utilizadores.Add(novoUser);
-                db.SaveChanges();
-
-                MessageBox.Show("Utilizador registado com sucesso!");
-
+                MessageBox.Show("Utilizador registado com sucesso!", "Sucesso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                tbNomeReg.Clear();
                 tbUsernameReg.Clear();
                 tbPasswordReg.Clear();
                 tabControl1.SelectedTab = tabPage2;
+            }
+            else
+            {
+                MessageBox.Show("Erro ao registar. Verifique se todos os campos estão preenchidos " +
+                    "e se o username não está em uso.", "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

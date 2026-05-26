@@ -24,6 +24,9 @@ namespace Projeto_DA_MDS.Models
         [Required]
         public string Password { get; set; }
 
+        public int? CriadoPorId { get; set; }
+        public int? AlteradoPorId { get; set; }
+
         public virtual List<ListaCompra> ListasCriadas { get; set; }
         public virtual List<Orcamento> Orcamentos { get; set; }
 
