@@ -99,9 +99,9 @@ namespace Projeto_DA_MDS.Views
         // Menu "Gestão > Utilizadores" — TODO: descomentar quando FormGestaoUtilizadores (Pessoa 1) estiver criado
         private void utilizadoresToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // FormGestaoUtilizadores form = new FormGestaoUtilizadores();
-            // form.ShowDialog();
-            MessageBox.Show("Gestão de Utilizadores ainda não implementada (Pessoa 1).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            FormGestaoUtilizadores form = new FormGestaoUtilizadores();
+            form.ShowDialog();
+            
         }
 
         // Menu "Gestão > Artigos"
@@ -159,6 +159,11 @@ namespace Projeto_DA_MDS.Views
         {
             FormGestaoTipoArtigo form = new FormGestaoTipoArtigo();
             form.ShowDialog();
+        }
+
+        private void dgvComprasAbertas_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

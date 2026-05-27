@@ -34,13 +34,13 @@
             this.artigosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.orçamentosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.planeamentoDeComprasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tipoDeArtigoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.estatísticasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sairToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lblUtilizador = new System.Windows.Forms.Label();
             this.lblTitulo = new System.Windows.Forms.Label();
             this.dgvComprasAbertas = new System.Windows.Forms.DataGridView();
             this.btnAbrirModoCompra = new System.Windows.Forms.Button();
-            this.tipoDeArtigoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvComprasAbertas)).BeginInit();
             this.SuspendLayout();
@@ -98,6 +98,13 @@
             this.planeamentoDeComprasToolStripMenuItem.Text = "Planeamento de Compras";
             this.planeamentoDeComprasToolStripMenuItem.Click += new System.EventHandler(this.planeamentoDeComprasToolStripMenuItem_Click);
             // 
+            // tipoDeArtigoToolStripMenuItem
+            // 
+            this.tipoDeArtigoToolStripMenuItem.Name = "tipoDeArtigoToolStripMenuItem";
+            this.tipoDeArtigoToolStripMenuItem.Size = new System.Drawing.Size(263, 26);
+            this.tipoDeArtigoToolStripMenuItem.Text = "Tipo de Artigo";
+            this.tipoDeArtigoToolStripMenuItem.Click += new System.EventHandler(this.tipoDeArtigoToolStripMenuItem_Click);
+            // 
             // estatísticasToolStripMenuItem
             // 
             this.estatísticasToolStripMenuItem.Name = "estatísticasToolStripMenuItem";
@@ -142,6 +149,7 @@
             this.dgvComprasAbertas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvComprasAbertas.Size = new System.Drawing.Size(386, 153);
             this.dgvComprasAbertas.TabIndex = 6;
+            this.dgvComprasAbertas.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvComprasAbertas_CellContentClick);
             // 
             // btnAbrirModoCompra
             // 
@@ -152,13 +160,6 @@
             this.btnAbrirModoCompra.Text = "Abrir Modo Compra";
             this.btnAbrirModoCompra.UseVisualStyleBackColor = false;
             this.btnAbrirModoCompra.Click += new System.EventHandler(this.btnAbrirModoCompra_Click);
-            // 
-            // tipoDeArtigoToolStripMenuItem
-            // 
-            this.tipoDeArtigoToolStripMenuItem.Name = "tipoDeArtigoToolStripMenuItem";
-            this.tipoDeArtigoToolStripMenuItem.Size = new System.Drawing.Size(263, 26);
-            this.tipoDeArtigoToolStripMenuItem.Text = "Tipo de Artigo";
-            this.tipoDeArtigoToolStripMenuItem.Click += new System.EventHandler(this.tipoDeArtigoToolStripMenuItem_Click);
             // 
             // FormPrincipal
             // 
