@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Projeto_DA_MDS
 {
-    //public class IshoppingDbInitializer: DropCreateDatabaseIfModelChanges<IshoppingContext>
-    public class IshoppingDbInitializer : DropCreateDatabaseAlways<IshoppingContext>
+    public class IshoppingDbInitializer: DropCreateDatabaseIfModelChanges<IshoppingContext>
+    //public class IshoppingDbInitializer : DropCreateDatabaseAlways<IshoppingContext>
     {
         protected override void Seed(IshoppingContext context)
         {

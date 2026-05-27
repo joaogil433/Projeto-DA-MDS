@@ -216,6 +216,7 @@
             this.btnRemoverItem.TabIndex = 15;
             this.btnRemoverItem.Text = "Remover Item";
             this.btnRemoverItem.UseVisualStyleBackColor = true;
+            this.btnRemoverItem.Click += new System.EventHandler(this.btnRemoverItem_Click_1);
             // 
             // btnGuardar
             // 

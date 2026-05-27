@@ -97,6 +97,12 @@
     <Compile Include="Views\FormGestaoTipoArtigo.Designer.cs">
       <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FormGestaoUtilizadores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoUtilizadores.Designer.cs">
+      <DependentUpon>FormGestaoUtilizadores.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\FormModoCompra.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormGestaoTipoArtigo.resx">
       <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoUtilizadores.resx">
+      <DependentUpon>FormGestaoUtilizadores.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FormModoCompra.resx">
       <DependentUpon>FormModoCompra.cs</DependentUpon>

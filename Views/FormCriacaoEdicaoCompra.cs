@@ -323,5 +323,10 @@ namespace Projeto_DA_MDS.Views
 
             public override string ToString() { return _nome; }
         }
+
+        private void btnRemoverItem_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
