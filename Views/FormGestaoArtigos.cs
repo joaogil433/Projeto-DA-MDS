@@ -18,14 +18,17 @@ namespace Projeto_DA_MDS.Views
             InitializeComponent();
             artigoCtrl = new ArtigoController();
             idSelecionado = 0;
+            dgvArtigos.SelectionChanged += new EventHandler(dgvArtigos_SelectionChanged);
+            dgvArtigos.DoubleClick += new EventHandler(dgvArtigos_DoubleClick);
             btnNovo.Click += new EventHandler(btnNovo_Click);
             btnEditar.Click += new EventHandler(btnEditar_Click);
             btnEliminar.Click += new EventHandler(btnEliminar_Click);
             btnGuardar.Click += new EventHandler(btnGuardar_Click);
             btnCancelar.Click += new EventHandler(btnCancelar_Click);
             btnFiltrar.Click += new EventHandler(btnFiltrar_Click);
-            dgvArtigos.SelectionChanged += new EventHandler(dgvArtigos_SelectionChanged);
-            dgvArtigos.DoubleClick += new EventHandler(dgvArtigos_DoubleClick);
+            dgvArtigos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvArtigos.MultiSelect = false;
+            dgvArtigos.ReadOnly = true;
             CarregarTiposArtigo();
             CarregarArtigos();
             ModoLeitura();
@@ -75,55 +78,54 @@ namespace Projeto_DA_MDS.Views
                 ComboItem filtro = cmbFiltroTipo.SelectedItem as ComboItem;
 
                 if (filtro == null || filtro.Id == 0)
-                {
                     lista = artigoCtrl.GetAll();
-                }
                 else
-                {
                     lista = artigoCtrl.GetByTipo(filtro.Id);
-                }
+
+                // Projeta para um tipo anónimo simples — o DataGridView lê diretamente
+                var fonte = lista.Select(a => new {
+                    Id = a.Id,
+                    Nome = a.Nome,
+                    TipoDeArtigo = a.Tipo != null ? a.Tipo.Nome : "—"
+                }).ToList();
 
                 dgvArtigos.DataSource = null;
                 dgvArtigos.AutoGenerateColumns = false;
                 dgvArtigos.Columns.Clear();
+                dgvArtigos.SelectionMode = DataGridViewSelectionMode.FullRowSelect; // <- linha inteira
+                dgvArtigos.MultiSelect = false;
 
-                DataGridViewTextBoxColumn colId = new DataGridViewTextBoxColumn();
-                colId.DataPropertyName = "Id";
-                colId.HeaderText = "ID";
-                colId.Visible = false;
-
-                DataGridViewTextBoxColumn colNome = new DataGridViewTextBoxColumn();
-                colNome.DataPropertyName = "Nome";
-                colNome.HeaderText = "Artigo";
-                colNome.FillWeight = 200;
-
-                DataGridViewTextBoxColumn colTipo = new DataGridViewTextBoxColumn();
-                colTipo.Name = "colTipoArtigo";
-                colTipo.HeaderText = "Tipo de Artigo";
-                colTipo.FillWeight = 150;
-
-                dgvArtigos.Columns.Add(colId);
-                dgvArtigos.Columns.Add(colNome);
-                dgvArtigos.Columns.Add(colTipo);
-                dgvArtigos.DataSource = lista;
-                dgvArtigos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-                for (int i = 0; i < lista.Count; i++)
+                dgvArtigos.Columns.Add(new DataGridViewTextBoxColumn
                 {
-                    if (lista[i].Tipo != null)
-                    {
-                        dgvArtigos.Rows[i].Cells["colTipoArtigo"].Value = lista[i].Tipo.Nome;
-                    }
-                    else
-                    {
-                        dgvArtigos.Rows[i].Cells["colTipoArtigo"].Value = "—";
-                    }
-                }
+                    Name = "Id",
+                    DataPropertyName = "Id",
+                    HeaderText = "ID",
+                    Visible = false
+                });
+                dgvArtigos.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "Nome",
+                    DataPropertyName = "Nome",
+                    HeaderText = "Artigo",
+                    FillWeight = 200
+                });
+                dgvArtigos.Columns.Add(new DataGridViewTextBoxColumn
+                {
+                    Name = "TipoDeArtigo",
+                    DataPropertyName = "TipoDeArtigo",  // <- liga diretamente à propriedade
+                    HeaderText = "Tipo de Artigo",
+                    FillWeight = 150
+                });
+
+                dgvArtigos.DataSource = fonte;
+                dgvArtigos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
                 AtualizarBotoes();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar artigos: " + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao carregar artigos: " + ex.Message, "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -255,7 +257,7 @@ namespace Projeto_DA_MDS.Views
             if (dgvArtigos.SelectedRows.Count == 0) return;
 
             int id = (int)dgvArtigos.SelectedRows[0].Cells["Id"].Value;
-            string nomeArtigo = dgvArtigos.SelectedRows[0].Cells["Nome"].Value.ToString();
+            string nomeArtigo = dgvArtigos.SelectedRows[0].Cells[1].Value.ToString();
 
             DialogResult confirmacao = MessageBox.Show(
                 "Eliminar o artigo \"" + nomeArtigo + "\"?",
@@ -297,6 +299,11 @@ namespace Projeto_DA_MDS.Views
             public ComboItem(int id, string nome) { _id = id; _nome = nome; }
 
             public override string ToString() { return _nome; }
+        }
+
+        private void btnNovo_Click_1(object sender, EventArgs e)
+        {
+
         }
     }
 }
