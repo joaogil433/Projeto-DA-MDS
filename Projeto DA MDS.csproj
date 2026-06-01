@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{63AC4472-2F01-43B2-BEF5-4C1BB81750AC}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Projeto_DA_MDS</RootNamespace>
+    <AssemblyName>Projeto DA MDS</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.5.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\ArtigoController.cs" />
+    <Compile Include="Controllers\ListaCompraController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OrcamentoController.cs" />
+    <Compile Include="Controllers\TipoArtigoController.cs" />
+    <Compile Include="Controllers\UtilizadorController.cs" />
+    <Compile Include="Helpers\HashHelper.cs" />
+    <Compile Include="IshoppingContext.cs" />
+    <Compile Include="IshoppingDbInitializer.cs" />
+    <Compile Include="Models\Artigo.cs" />
+    <Compile Include="Models\ItemCompra.cs" />
+    <Compile Include="Models\ItemNaoPrevisto.cs" />
+    <Compile Include="Models\ItemPrevisto.cs" />
+    <Compile Include="Models\ListaCompra.cs" />
+    <Compile Include="Models\Orcamento.cs" />
+    <Compile Include="Models\TipoArtigo.cs" />
+    <Compile Include="Sessao.cs" />
+    <Compile Include="Views\FormCriacaoEdicaoCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormCriacaoEdicaoCompra.Designer.cs">
+      <DependentUpon>FormCriacaoEdicaoCompra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoArtigos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoArtigos.Designer.cs">
+      <DependentUpon>FormGestaoArtigos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoOrcamentos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoOrcamentos.Designer.cs">
+      <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoTipoArtigo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoTipoArtigo.Designer.cs">
+      <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormGestaoUtilizadores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormGestaoUtilizadores.Designer.cs">
+      <DependentUpon>FormGestaoUtilizadores.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormModoCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormModoCompra.Designer.cs">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormPlaneamentoCompras.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPlaneamentoCompras.Designer.cs">
+      <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\Utilizador.cs" />
+    <Compile Include="Views\FormLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormLogin.Designer.cs">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FormPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FormPrincipal.Designer.cs">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Views\FormCriacaoEdicaoCompra.resx">
+      <DependentUpon>FormCriacaoEdicaoCompra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoArtigos.resx">
+      <DependentUpon>FormGestaoArtigos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoOrcamentos.resx">
+      <DependentUpon>FormGestaoOrcamentos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoTipoArtigo.resx">
+      <DependentUpon>FormGestaoTipoArtigo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormGestaoUtilizadores.resx">
+      <DependentUpon>FormGestaoUtilizadores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormModoCompra.resx">
+      <DependentUpon>FormModoCompra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPlaneamentoCompras.resx">
+      <DependentUpon>FormPlaneamentoCompras.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormLogin.resx">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FormPrincipal.resx">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Este projeto faz referência a pacotes do NuGet que não estão presentes neste computador. Use a Restauração de Pacotes do NuGet para baixá-los.  Para obter mais informações, consulte http://go.microsoft.com/fwlink/?LinkID=322105. O arquivo ausente é {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.5.2\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="packages\EntityFramework.6.5.2\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.5.2\build\EntityFramework.targets')" />
+</Project>
