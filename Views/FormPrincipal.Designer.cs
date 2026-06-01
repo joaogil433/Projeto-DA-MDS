@@ -139,7 +139,7 @@
             // dgvComprasAbertas
             // 
             this.dgvComprasAbertas.AllowUserToAddRows = false;
-            this.dgvComprasAbertas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvComprasAbertas.ColumnHeadersHeight = 29;
             this.dgvComprasAbertas.Location = new System.Drawing.Point(37, 183);
             this.dgvComprasAbertas.MultiSelect = false;
             this.dgvComprasAbertas.Name = "dgvComprasAbertas";

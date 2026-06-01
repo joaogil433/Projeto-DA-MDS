@@ -44,8 +44,11 @@
             this.btnCancelar = new System.Windows.Forms.Button();
             this.btnGuardar = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.panelFormularioGestaoArtigos = new System.Windows.Forms.Panel();
+            this.btnVoltar = new System.Windows.Forms.Button();
             this.panelFormulario.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvArtigos)).BeginInit();
+            this.panelFormularioGestaoArtigos.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelFormulario
@@ -119,7 +122,6 @@
             this.btnNovo.TabIndex = 7;
             this.btnNovo.Text = "Novo";
             this.btnNovo.UseVisualStyleBackColor = true;
-            this.btnNovo.Click += new System.EventHandler(this.btnNovo_Click_1);
             // 
             // btnEditar
             // 
@@ -142,7 +144,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(252, 336);
+            this.label1.Location = new System.Drawing.Point(54, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(44, 16);
             this.label1.TabIndex = 12;
@@ -151,7 +153,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(204, 377);
+            this.label2.Location = new System.Drawing.Point(6, 47);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(92, 16);
             this.label2.TabIndex = 13;
@@ -159,7 +161,7 @@
             // 
             // txtNome
             // 
-            this.txtNome.Location = new System.Drawing.Point(302, 333);
+            this.txtNome.Location = new System.Drawing.Point(104, 3);
             this.txtNome.Name = "txtNome";
             this.txtNome.Size = new System.Drawing.Size(194, 22);
             this.txtNome.TabIndex = 14;
@@ -168,14 +170,14 @@
             // 
             this.cmbTipoArtigo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTipoArtigo.FormattingEnabled = true;
-            this.cmbTipoArtigo.Location = new System.Drawing.Point(302, 374);
+            this.cmbTipoArtigo.Location = new System.Drawing.Point(104, 44);
             this.cmbTipoArtigo.Name = "cmbTipoArtigo";
             this.cmbTipoArtigo.Size = new System.Drawing.Size(129, 24);
             this.cmbTipoArtigo.TabIndex = 15;
             // 
             // btnCancelar
             // 
-            this.btnCancelar.Location = new System.Drawing.Point(517, 374);
+            this.btnCancelar.Location = new System.Drawing.Point(319, 44);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(87, 35);
             this.btnCancelar.TabIndex = 16;
@@ -184,7 +186,7 @@
             // 
             // btnGuardar
             // 
-            this.btnGuardar.Location = new System.Drawing.Point(517, 333);
+            this.btnGuardar.Location = new System.Drawing.Point(319, 3);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(87, 35);
             this.btnGuardar.TabIndex = 17;
@@ -200,18 +202,37 @@
             this.lblStatus.Size = new System.Drawing.Size(0, 16);
             this.lblStatus.TabIndex = 19;
             // 
+            // panelFormularioGestaoArtigos
+            // 
+            this.panelFormularioGestaoArtigos.Controls.Add(this.btnGuardar);
+            this.panelFormularioGestaoArtigos.Controls.Add(this.btnCancelar);
+            this.panelFormularioGestaoArtigos.Controls.Add(this.cmbTipoArtigo);
+            this.panelFormularioGestaoArtigos.Controls.Add(this.txtNome);
+            this.panelFormularioGestaoArtigos.Controls.Add(this.label2);
+            this.panelFormularioGestaoArtigos.Controls.Add(this.label1);
+            this.panelFormularioGestaoArtigos.Location = new System.Drawing.Point(192, 331);
+            this.panelFormularioGestaoArtigos.Name = "panelFormularioGestaoArtigos";
+            this.panelFormularioGestaoArtigos.Size = new System.Drawing.Size(433, 101);
+            this.panelFormularioGestaoArtigos.TabIndex = 20;
+            // 
+            // btnVoltar
+            // 
+            this.btnVoltar.Location = new System.Drawing.Point(708, 409);
+            this.btnVoltar.Name = "btnVoltar";
+            this.btnVoltar.Size = new System.Drawing.Size(80, 31);
+            this.btnVoltar.TabIndex = 21;
+            this.btnVoltar.Text = "Voltar";
+            this.btnVoltar.UseVisualStyleBackColor = true;
+            this.btnVoltar.Click += new System.EventHandler(this.btnVoltar_Click);
+            // 
             // FormGestaoArtigos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnVoltar);
+            this.Controls.Add(this.panelFormularioGestaoArtigos);
             this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.btnGuardar);
-            this.Controls.Add(this.btnCancelar);
-            this.Controls.Add(this.cmbTipoArtigo);
-            this.Controls.Add(this.txtNome);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnEditar);
             this.Controls.Add(this.btnNovo);
@@ -226,6 +247,8 @@
             this.panelFormulario.ResumeLayout(false);
             this.panelFormulario.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvArtigos)).EndInit();
+            this.panelFormularioGestaoArtigos.ResumeLayout(false);
+            this.panelFormularioGestaoArtigos.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,5 +272,7 @@
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnGuardar;
         private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Panel panelFormularioGestaoArtigos;
+        private System.Windows.Forms.Button btnVoltar;
     }
 }

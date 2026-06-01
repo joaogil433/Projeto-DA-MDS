@@ -277,7 +277,7 @@ namespace Projeto_DA_MDS.Views
         {
             if (dgvItens.SelectedRows.Count == 0) return;
 
-            int id = (int)dgvItens.SelectedRows[0].Cells["Id"].Value;
+            int id = (int)dgvItens.SelectedRows[0].Value;
             string nomeArtigo = dgvItens.SelectedRows[0].Cells["colArtigo"].Value.ToString();
 
             DialogResult conf = MessageBox.Show(

@@ -23,6 +23,8 @@ namespace Projeto_DA_MDS.Views
         {
             try
             {
+                dgvComprasAbertas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                dgvComprasAbertas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
                 List<ListaCompra> compras = listaCtrl.GetAbertas();
 
                 dgvComprasAbertas.DataSource = null;
@@ -56,13 +58,13 @@ namespace Projeto_DA_MDS.Views
                 dgvComprasAbertas.Columns.Add(colData);
                 dgvComprasAbertas.Columns.Add(colCriador);
                 dgvComprasAbertas.DataSource = compras;
-                dgvComprasAbertas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
+                // PREENCHE OS NOMES DOS CRIADORES
                 for (int i = 0; i < compras.Count; i++)
                 {
                     dgvComprasAbertas.Rows[i].Cells["colCriador"].Value =
                         compras[i].UtilizadorCriou != null ? compras[i].UtilizadorCriou.Nome : "—";
                 }
+                dgvComprasAbertas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
                 lblTitulo.Text = "Compras em Aberto (" + compras.Count + ")";
             }

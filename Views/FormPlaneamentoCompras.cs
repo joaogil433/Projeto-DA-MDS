@@ -1,280 +1,233 @@
-﻿// Responsabilidade: listar todas as compras com filtro por estado e aceder à criação/edição
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Drawing;              // acesso a Color (para colorir linhas fechadas)
 using System.Windows.Forms;
 using Projeto_DA_MDS.Controllers;
 using Projeto_DA_MDS.Models;
 
 namespace Projeto_DA_MDS.Views
 {
-    public partial class FormPlaneamentoCompras : Form
+    public partial class FormPlaneamentoCompras : Form // lista todas as compras com filtro e CRUD
     {
-        // Controller que trata a lógica das listas de compras
-        private ListaCompraController listaCtrl;
+        private ListaCompraController listaCtrl; // controller para operações de listas de compras
 
         public FormPlaneamentoCompras()
         {
-            InitializeComponent();
+            InitializeComponent();           // cria os controlos definidos no Designer
+            listaCtrl = new ListaCompraController(); // instancia o controller
 
-            listaCtrl = new ListaCompraController();
-
-            // Preenche o ComboBox de filtro com as opções de estado
-            cmbFiltroEstado.Items.Add("Todos");   // Mostra todas as listas
-            cmbFiltroEstado.Items.Add("Aberta");  // Só as listas em aberto
-            cmbFiltroEstado.Items.Add("Fechada"); // Só as listas fechadas
-
-            // Seleciona "Todos" por omissão
+            cmbFiltroEstado.Items.Clear();   // ← limpa os 3 que o Designer já adicionou
+            cmbFiltroEstado.Items.Add("Todos");
+            cmbFiltroEstado.Items.Add("Aberta");
+            cmbFiltroEstado.Items.Add("Fechada");
             cmbFiltroEstado.SelectedIndex = 0;
 
-            // Carrega todas as compras na grelha
-            CarregarCompras();
+            CarregarCompras(); // preenche a grelha ao abrir o form
         }
 
-        // Carrega as compras na grelha aplicando o filtro selecionado
-        private void CarregarCompras()
+        private void CarregarCompras() // lê as compras da BD e preenche a grelha conforme o filtro
         {
             try
             {
-                // Lê o estado selecionado no filtro
-                string filtro = cmbFiltroEstado.SelectedItem.ToString();
-                List<ListaCompra> lista;
+                string filtro = cmbFiltroEstado.SelectedItem.ToString(); // lê o texto selecionado no ComboBox
+                List<ListaCompra> lista; // vai guardar a lista de compras a mostrar
 
-                // Decide qual método do controller usar conforme o filtro
-                if (filtro == "Todos")
+                if (filtro == "Todos") // sem filtro — busca tudo
                 {
-                    lista = listaCtrl.GetAll();
+                    lista = listaCtrl.GetAll(); // vai à BD buscar todas as compras
                 }
-                else
+                else // com filtro — "Aberta" ou "Fechada"
                 {
-                    // Passa "Aberta" ou "Fechada" ao controller
-                    lista = listaCtrl.GetByEstado(filtro);
+                    lista = listaCtrl.GetByEstado(filtro); // vai à BD buscar só as do estado escolhido
                 }
 
-                // Limpa e define as colunas manualmente
-                dgvCompras.DataSource = null;
-                dgvCompras.AutoGenerateColumns = false;
-                dgvCompras.Columns.Clear();
+                dgvCompras.DataSource = null;           // limpa a fonte anterior
+                dgvCompras.AutoGenerateColumns = false; // desativa criação automática de colunas
+                dgvCompras.Columns.Clear();             // remove colunas existentes
 
-                // Id escondido — necessário para identificar a linha no CRUD
                 DataGridViewTextBoxColumn colId = new DataGridViewTextBoxColumn();
-                colId.Name = "Id";
-                colId.DataPropertyName = "Id";
+                colId.Name = "Id";               // chave para Cells["Id"]
+                colId.DataPropertyName = "Id";   // mapeia ao campo Id do modelo
                 colId.HeaderText = "ID";
-                colId.Visible = false;
+                colId.Visible = false;           // escondida — só usada internamente
 
-                // Nome da compra
                 DataGridViewTextBoxColumn colNome = new DataGridViewTextBoxColumn();
-                colNome.Name = "Nome";
-                colNome.DataPropertyName = "Nome";
+                colNome.Name = "Nome";                 // chave para Cells["Nome"]
+                colNome.DataPropertyName = "Nome";     // mapeia ao campo Nome do modelo
                 colNome.HeaderText = "Nome da Compra";
                 colNome.FillWeight = 200;
 
-                // Estado ("Aberta" ou "Fechada")
                 DataGridViewTextBoxColumn colEstado = new DataGridViewTextBoxColumn();
-                colEstado.Name = "Estado";
-                colEstado.DataPropertyName = "Estado";
+                colEstado.Name = "Estado";             // chave para Cells["Estado"]
+                colEstado.DataPropertyName = "Estado"; // mapeia ao campo Estado ("Aberta" ou "Fechada")
                 colEstado.HeaderText = "Estado";
                 colEstado.FillWeight = 80;
 
-                // Data de criação com formato legível
                 DataGridViewTextBoxColumn colCriacao = new DataGridViewTextBoxColumn();
-                colCriacao.DataPropertyName = "DataCriacao";
+                colCriacao.DataPropertyName = "DataCriacao"; // mapeia à data de criação
                 colCriacao.HeaderText = "Criado Em";
                 colCriacao.FillWeight = 130;
-                colCriacao.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                colCriacao.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm"; // formato de data legível
 
-                // Criador — preenchido manualmente a partir de UtilizadorCriou.Nome
                 DataGridViewTextBoxColumn colCriador = new DataGridViewTextBoxColumn();
-                colCriador.Name = "colCriador";
+                colCriador.Name = "colCriador";  // chave para preencher manualmente abaixo
                 colCriador.HeaderText = "Criado Por";
-                colCriador.FillWeight = 120;
+                colCriador.FillWeight = 120;     // sem DataPropertyName — preenchido manualmente
 
-                // Data de alteração — nullable (pode ser null)
                 DataGridViewTextBoxColumn colAlteracao = new DataGridViewTextBoxColumn();
-                colAlteracao.DataPropertyName = "DataAlteracao";
+                colAlteracao.DataPropertyName = "DataAlteracao"; // mapeia à data de alteração (nullable)
                 colAlteracao.HeaderText = "Alterado Em";
                 colAlteracao.FillWeight = 130;
                 colAlteracao.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
 
-                // Alterador — preenchido manualmente
                 DataGridViewTextBoxColumn colAlterador = new DataGridViewTextBoxColumn();
-                colAlterador.Name = "colAlterador";
+                colAlterador.Name = "colAlterador"; // chave para preencher manualmente abaixo
                 colAlterador.HeaderText = "Alterado Por";
                 colAlterador.FillWeight = 120;
 
-                // Adiciona todas as colunas
-                dgvCompras.Columns.Add(colId);
+                dgvCompras.Columns.Add(colId);         // adiciona colunas pela ordem que vão aparecer
                 dgvCompras.Columns.Add(colNome);
                 dgvCompras.Columns.Add(colEstado);
                 dgvCompras.Columns.Add(colCriacao);
                 dgvCompras.Columns.Add(colCriador);
                 dgvCompras.Columns.Add(colAlteracao);
                 dgvCompras.Columns.Add(colAlterador);
-                // Liga os dados à grelha
-                dgvCompras.DataSource = lista;
-                dgvCompras.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+                dgvCompras.DataSource = lista;         // liga os dados à grelha
+                dgvCompras.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None; // larguras fixas
 
-                // Preenche as colunas calculadas e aplica estilos visuais
-                for (int i = 0; i < lista.Count; i++)
+                for (int i = 0; i < lista.Count; i++) // percorre cada linha para preencher colunas manuais
                 {
-                    ListaCompra c = lista[i];
+                    ListaCompra c = lista[i]; // atalho para o item atual
 
-                    // UtilizadorCriou é o nome da propriedade de navegação no modelo ListaCompra
-                    if (c.UtilizadorCriou != null)
-                    {
-                        dgvCompras.Rows[i].Cells["colCriador"].Value = c.UtilizadorCriou.Nome;
-                    }
-                    else
-                    {
-                        dgvCompras.Rows[i].Cells["colCriador"].Value = "—";
-                    }
+                    dgvCompras.Rows[i].Cells["colCriador"].Value =
+                        c.UtilizadorCriou != null ? c.UtilizadorCriou.Nome : "—";
+                    // preenche o nome do criador; "—" se a propriedade de navegação for null
 
-                    // UtilizadorAlterou é o nome da propriedade de navegação no modelo ListaCompra
-                    if (c.UtilizadorAlterou != null)
-                    {
-                        dgvCompras.Rows[i].Cells["colAlterador"].Value = c.UtilizadorAlterou.Nome;
-                    }
-                    else
-                    {
-                        dgvCompras.Rows[i].Cells["colAlterador"].Value = "—";
-                    }
+                    dgvCompras.Rows[i].Cells["colAlterador"].Value =
+                        c.UtilizadorAlterou != null ? c.UtilizadorAlterou.Nome : "—";
+                    // preenche o nome do último a alterar
 
-                    // Compras fechadas aparecem a cinzento para distinguir visualmente
-                    if (c.Estado == "Fechada")
+                    if (c.Estado == "Fechada") // diferencia visualmente compras fechadas
                     {
-                        dgvCompras.Rows[i].DefaultCellStyle.ForeColor = Color.Gray;
+                        dgvCompras.Rows[i].DefaultCellStyle.ForeColor = Color.Gray; // texto cinzento
                     }
                 }
 
-                // Mostra o total de compras na label
-                lblContador.Text = lista.Count + " compra(s)";
-                AtualizarBotoes();
+                lblContador.Text = lista.Count + " compra(s)"; // mostra o total de compras na label
+                AtualizarBotoes(); // ativa/desativa botões conforme a seleção atual
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao carregar compras: " + ex.Message,
-                    "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Erro ao carregar compras: " + ex.Message, "Erro",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // Atualiza os botões e o texto do botão Editar/Ver consoante o estado da seleção
-        private void AtualizarBotoes()
+        private void AtualizarBotoes() // atualiza o estado dos botões conforme a linha selecionada
         {
-            bool temSelecao = dgvCompras.SelectedRows.Count > 0;
-            btnEditarVer.Enabled = temSelecao;
+            bool temSelecao = dgvCompras.SelectedRows.Count > 0; // há linha selecionada?
+            btnEditarVer.Enabled = temSelecao; // só ativa se houver seleção
             btnEliminar.Enabled = temSelecao;
 
-            if (temSelecao)
+            if (temSelecao) // se há seleção, ajusta o texto do botão Editar/Ver
             {
-                string estado = dgvCompras.SelectedRows[0].Cells["Estado"].Value.ToString();
+                string estado = dgvCompras.SelectedRows[0].Cells["Estado"].Value.ToString(); // lê o estado da linha
 
-                // Se a compra está fechada, o botão só permite visualizar (sem editar)
-                if (estado == "Fechada")
+                if (estado == "Fechada") // compra fechada — só pode ver, não editar
                 {
-                    btnEditarVer.Text = "Ver";
+                    btnEditarVer.Text = "Ver"; // muda o texto do botão
                 }
-                else
+                else // compra aberta — pode editar
                 {
                     btnEditarVer.Text = "Editar";
                 }
             }
         }
 
-        // Botão "Filtrar" — recarrega a grelha com o filtro atual
-        private void btnFiltrar_Click(object sender, EventArgs e)
+        private void btnFiltrar_Click(object sender, EventArgs e) // botão "Filtrar"
         {
-            CarregarCompras();
+            CarregarCompras(); // recarrega a grelha aplicando o filtro atual do ComboBox
         }
 
-        // Quando a seleção muda, atualiza os botões
-        private void dgvCompras_SelectionChanged(object sender, EventArgs e)
+        private void dgvCompras_SelectionChanged(object sender, EventArgs e) // seleção na grelha mudou
         {
-            AtualizarBotoes();
+            AtualizarBotoes(); // atualiza os botões conforme o que está selecionado
         }
 
-        // Duplo clique abre o formulário de edição/visualização
-        private void dgvCompras_DoubleClick(object sender, EventArgs e)
+        private void dgvCompras_DoubleClick(object sender, EventArgs e) // double-click na grelha
         {
-            AbrirEdicao();
+            AbrirEdicao(); // abre o form de edição para a linha selecionada
         }
 
-        // Botão "Nova" — abre o form de criação (listaId = 0 significa nova lista)
-        private void btnNova_Click(object sender, EventArgs e)
+        private void btnNova_Click(object sender, EventArgs e) // botão "Nova"
         {
             FormCriacaoEdicaoCompra form = new FormCriacaoEdicaoCompra(0);
-
-            // Quando o form de criação fechar, recarrega a grelha automaticamente
+            // passa 0 como listaId — o form interpreta 0 como "criar nova lista"
             form.FormClosed += new FormClosedEventHandler(SubForm_FormClosed);
+            // quando fechar, recarrega a grelha para mostrar a nova compra
             form.ShowDialog();
         }
 
-        // Botão "Editar/Ver" — abre o form com a lista selecionada
-        private void btnEditarVer_Click(object sender, EventArgs e)
+        private void btnEditarVer_Click(object sender, EventArgs e) // botão "Editar" ou "Ver"
         {
-            AbrirEdicao();
+            AbrirEdicao(); // delega no método partilhado
         }
 
-        // Método partilhado para abrir o form de edição com a lista selecionada
-        private void AbrirEdicao()
+        private void AbrirEdicao() // método partilhado — abre o form de edição/visualização
         {
-            if (dgvCompras.SelectedRows.Count == 0)
+            if (dgvCompras.SelectedRows.Count == 0) // proteção: sem seleção não faz nada
             {
                 return;
             }
 
-            // Lê o Id da linha selecionada
             int id = (int)dgvCompras.SelectedRows[0].Cells["Id"].Value;
+            // lê o Id da linha selecionada (coluna invisível)
 
-            // Passa o Id ao form — o form decide se é modo edição ou leitura consoante o estado
             FormCriacaoEdicaoCompra form = new FormCriacaoEdicaoCompra(id);
+            // passa o Id — o form vai à BD buscar os dados e decide se é edição ou leitura
             form.FormClosed += new FormClosedEventHandler(SubForm_FormClosed);
             form.ShowDialog();
         }
 
-        // Quando um sub-form fecha, recarrega a grelha para mostrar alterações
-        private void SubForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void SubForm_FormClosed(object sender, FormClosedEventArgs e) // sub-form fechou
         {
-            CarregarCompras();
+            CarregarCompras(); // recarrega a grelha para mostrar eventuais alterações
         }
 
-        // Botão "Eliminar" — verifica regras e pede confirmação
-        private void btnEliminar_Click(object sender, EventArgs e)
+        private void btnEliminar_Click(object sender, EventArgs e) // botão "Eliminar"
         {
-            if (dgvCompras.SelectedRows.Count == 0)
+            if (dgvCompras.SelectedRows.Count == 0) // proteção: sem seleção não faz nada
             {
                 return;
             }
 
-            int id = (int)dgvCompras.SelectedRows[0].Cells["Id"].Value;
-            string nomeCompra = dgvCompras.SelectedRows[0].Cells["Nome"].Value.ToString();
-            string estado = dgvCompras.SelectedRows[0].Cells["Estado"].Value.ToString();
+            int id = (int)dgvCompras.SelectedRows[0].Cells["Id"].Value; // Id da linha selecionada
+            string nomeCompra = dgvCompras.SelectedRows[0].Cells["Nome"].Value.ToString(); // nome para a confirmação
+            string estado = dgvCompras.SelectedRows[0].Cells["Estado"].Value.ToString();   // estado atual
 
-            // Regra de negócio: não é possível eliminar compras fechadas
-            if (estado == "Fechada")
+            if (estado == "Fechada") // regra de negócio: compras fechadas não podem ser eliminadas
             {
-                MessageBox.Show("Não é possível eliminar uma compra fechada.",
-                    "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
+                MessageBox.Show("Não é possível eliminar uma compra fechada.", "Aviso",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return; // sai sem eliminar
             }
 
-            // Confirmação antes de eliminar
             DialogResult confirmacao = MessageBox.Show(
                 "Eliminar a compra \"" + nomeCompra + "\" e todos os seus itens?",
-                "Confirmar",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
+                "Confirmar", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            // mostra caixa de confirmação com botões "Sim" e "Não"
 
-            if (confirmacao == DialogResult.Yes)
+            if (confirmacao == DialogResult.Yes) // utilizador confirmou a eliminação
             {
                 try
                 {
                     string mensagem = "";
                     bool sucesso = listaCtrl.Delete(id, out mensagem);
+                    // tenta eliminar na BD; out mensagem recebe o texto de resultado do controller
 
                     if (sucesso)
                     {
-                        CarregarCompras();
+                        CarregarCompras(); // recarrega a grelha após eliminar
                         MessageBox.Show(mensagem, "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -284,8 +237,8 @@ namespace Projeto_DA_MDS.Views
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Erro inesperado: " + ex.Message,
-                        "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Erro inesperado: " + ex.Message, "Erro",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

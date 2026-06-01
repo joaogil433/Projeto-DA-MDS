@@ -77,7 +77,7 @@
             // dgvOrcamentos
             // 
             this.dgvOrcamentos.AllowUserToAddRows = false;
-            this.dgvOrcamentos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvOrcamentos.ColumnHeadersHeight = 29;
             this.dgvOrcamentos.Location = new System.Drawing.Point(201, 84);
             this.dgvOrcamentos.MultiSelect = false;
             this.dgvOrcamentos.Name = "dgvOrcamentos";
