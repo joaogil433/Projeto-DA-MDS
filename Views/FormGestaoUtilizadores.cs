@@ -16,6 +16,8 @@ namespace Projeto_DA_MDS.Views
     {
         private UtilizadorController utilizadorCtrl;
         private int idSelecionado;
+
+
         public FormGestaoUtilizadores()
         {
             InitializeComponent();
@@ -26,9 +28,29 @@ namespace Projeto_DA_MDS.Views
             ModoLeitura();
         }
 
+       
+
         private void CarregarUtilizadores()
         {
-            List<Utilizador> lista = utilizadorCtrl.GetAll();
+            List<Utilizador> todos;
+
+            using (var db = new IshoppingContext())
+            {
+                todos = db.Utilizadores.OrderBy(u => u.Nome).ToList();
+            }
+
+            var dadosGrid = todos.Select(u => new
+            {
+                Id = u.Id,
+                Nome = u.Nome,
+                Username = u.Username,
+                CriadoPor = u.CriadoPorId.HasValue
+                ? (todos.FirstOrDefault(x => x.Id == u.CriadoPorId.Value)?.Nome ?? "(desconhecido)")
+                : "(sistema)",
+                AlteradoPor = u.AlteradoPorId.HasValue
+                ? (todos.FirstOrDefault(x => x.Id == u.AlteradoPorId.Value)?.Nome ?? "(desconhecido)")
+                : "-"
+            }).ToList();
 
             dataGridViewUtilizadores.DataSource = null;
             dataGridViewUtilizadores.AutoGenerateColumns = false;
@@ -48,13 +70,23 @@ namespace Projeto_DA_MDS.Views
             colUsername.DataPropertyName = "Username";
             colUsername.HeaderText = "Username";
 
+            DataGridViewTextBoxColumn colCriadoPor = new DataGridViewTextBoxColumn();
+            colCriadoPor.DataPropertyName = "CriadoPor";
+            colCriadoPor.HeaderText = "Criado por";
+
+            DataGridViewTextBoxColumn colAlteradoPor = new DataGridViewTextBoxColumn();
+            colAlteradoPor.DataPropertyName = "AlteradoPor";
+            colAlteradoPor.HeaderText = "Alterado por";
+
             dataGridViewUtilizadores.Columns.Add(colId);
             dataGridViewUtilizadores.Columns.Add(colNome);
             dataGridViewUtilizadores.Columns.Add(colUsername);
-            dataGridViewUtilizadores.DataSource = lista;
+            dataGridViewUtilizadores.Columns.Add(colCriadoPor);
+            dataGridViewUtilizadores.Columns.Add(colAlteradoPor);
+            dataGridViewUtilizadores.DataSource = dadosGrid;
             dataGridViewUtilizadores.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            lbContador.Text = lista.Count + " utilizador(es)";
+            lbContador.Text = todos.Count + " utilizador(es)";
             AtualizarBotoes();
         }
 
