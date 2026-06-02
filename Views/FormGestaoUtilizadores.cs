@@ -32,12 +32,7 @@ namespace Projeto_DA_MDS.Views
 
         private void CarregarUtilizadores()
         {
-            List<Utilizador> todos;
-
-            using (var db = new IshoppingContext())
-            {
-                todos = db.Utilizadores.OrderBy(u => u.Nome).ToList();
-            }
+            List<Utilizador> todos = utilizadorCtrl.GetAll();
 
             var dadosGrid = todos.Select(u => new
             {

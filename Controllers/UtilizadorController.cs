@@ -47,8 +47,15 @@ namespace Projeto_DA_MDS.Controllers
                     CriadoPorId = Sessao.UtilizadorAtual?.Id
                 });
 
-                db.SaveChanges();
-                return true;
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
 
@@ -74,8 +81,16 @@ namespace Projeto_DA_MDS.Controllers
                 if (!string.IsNullOrWhiteSpace(password))
                     utilizador.Password = HashHelper.HashPassword(password);
 
-                db.SaveChanges();
-                return true;
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
             }
         }
 
@@ -95,8 +110,16 @@ namespace Projeto_DA_MDS.Controllers
                 if (temDados) return false;
 
                 db.Utilizadores.Remove(utilizador);
-                db.SaveChanges();
-                return true;
+
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
     }
