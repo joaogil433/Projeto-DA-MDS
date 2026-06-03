@@ -14,11 +14,17 @@ namespace Projeto_DA_MDS.Controllers
         {
             string passwordHash = HashHelper.HashPassword(password);
 
-            using (var db = new IshoppingContext())
+            try
             {
-                return db.Utilizadores
-                    .FirstOrDefault(u => u.Username == username
-                                      && u.Password == passwordHash);
+                using (var db = new IshoppingContext())
+                {
+                    return db.Utilizadores
+                        .FirstOrDefault(u => u.Username == username && u.Password == passwordHash);
+                }
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
     }

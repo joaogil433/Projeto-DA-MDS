@@ -37,8 +37,15 @@ namespace Projeto_DA_MDS.Controllers
                 if (existe) return false;
 
                 db.TiposArtigo.Add(new TipoArtigo { Nome = nome.Trim() });
-                db.SaveChanges();
-                return true;
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
 
@@ -57,8 +64,15 @@ namespace Projeto_DA_MDS.Controllers
                 if (duplicado) return false;
 
                 tipo.Nome = nome.Trim();
-                db.SaveChanges();
-                return true;
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
 
@@ -73,8 +87,15 @@ namespace Projeto_DA_MDS.Controllers
                 if (temArtigos) return false;
 
                 db.TiposArtigo.Remove(tipo);
-                db.SaveChanges();
-                return true;
+                try
+                {
+                    db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
             }
         }
     }
