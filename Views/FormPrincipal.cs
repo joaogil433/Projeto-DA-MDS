@@ -131,9 +131,9 @@ namespace Projeto_DA_MDS.Views
         // Menu "Estatísticas" — TODO: descomentar quando FormEstatisticas (Pessoa 3) estiver criado
         private void estatisticasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // FormEstatisticas form = new FormEstatisticas();
-            // form.ShowDialog();
-            MessageBox.Show("Estatísticas ainda não implementadas (Pessoa 3).", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            FormEstatisticas form = new FormEstatisticas();
+            form.ShowDialog();
+            
         }
 
         // Menu "Sair"
