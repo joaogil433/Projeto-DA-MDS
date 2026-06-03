@@ -277,7 +277,7 @@ namespace Projeto_DA_MDS.Views
         {
             if (dgvItens.SelectedRows.Count == 0) return;
 
-            int id = (int)dgvItens.SelectedRows[0].Value;
+            int id = (int)dgvItens.SelectedRows[0].Cells[0].Value;
             string nomeArtigo = dgvItens.SelectedRows[0].Cells["colArtigo"].Value.ToString();
 
             DialogResult conf = MessageBox.Show(
@@ -325,6 +325,11 @@ namespace Projeto_DA_MDS.Views
         }
 
         private void btnRemoverItem_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dgvItens_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

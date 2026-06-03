@@ -303,5 +303,10 @@ namespace Projeto_DA_MDS.Views
         {
             this.Close();
         }
+
+        private void dgvArtigos_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }
