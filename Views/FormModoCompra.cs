@@ -1,6 +1,6 @@
 ﻿// FormModoCompra.cs
 // Responsabilidade: interface gráfica para a execução de uma compra (US4)
-// Permite ao utilizador registar preços reais, quantidades adquiridas,
+// Permite ao utilizador preencher quantidades adquiridas e preços reais,
 // adicionar itens não previstos e fechar a compra com data/hora e utilizador.
 
 using System;
@@ -14,134 +14,136 @@ namespace Projeto_DA_MDS.Views
 {
     public partial class FormModoCompra : Form
     {
-        // Lista de compras que está a ser executada neste momento
+        // Lista de compras que está a ser executada
         private ListaCompra _listaCompra;
 
         // Orçamento do mês atual — usado para calcular o disponível e mostrar alertas
         private Orcamento _orcamento;
 
-        // Contexto da base de dados — uma única instância partilhada durante a vida do form
-        // (seguro porque o form é modal e de curta duração)
+        // Contexto da BD — uma instância partilhada durante a vida do form
         private IshoppingContext _db;
 
-        // ── CONSTRUTORES ─────────────────────────────────────────────────────
+        // ── CONSTRUTORES ──────────────────────────────────────────────────────
 
-        // Construtor vazio — exigido pelo Designer do Visual Studio para pré-visualizar o form
-        // NÃO deve fazer nada com a BD, caso contrário o Designer rebenta ao carregar
+        // Construtor vazio — exigido pelo Designer do Visual Studio
+        // NÃO deve aceder à BD para não rebentar o Designer
         public FormModoCompra()
         {
             InitializeComponent();
         }
 
-        // Construtor real — chamado pela aplicação (ex: FormPrincipal ao abrir modo compra)
-        // Recebe a lista de compras que já foi carregada da BD com os seus itens
+        // Construtor real — chamado pelo FormPrincipal ao abrir o modo compra
         public FormModoCompra(ListaCompra listaCompra)
         {
             InitializeComponent();
-            _listaCompra = listaCompra;           // guarda a referência da lista
-            _db = new IshoppingContext();         // abre a ligação à BD
+            _listaCompra = listaCompra;
+            _db = new IshoppingContext();
         }
 
         // ── LOAD ──────────────────────────────────────────────────────────────
 
         private void FormModoCompra_Load(object sender, EventArgs e)
         {
-            // Segurança extra: se o construtor vazio foi usado (Designer),
-            // inicializa o contexto antes de tentar aceder à BD
+            // Segurança: garante que o contexto está inicializado
             if (_db == null)
                 _db = new IshoppingContext();
 
-            // Segurança extra: garante que a lista tem uma coleção de itens válida
-            // para evitar NullReferenceException nas operações seguintes
+            // Segurança: garante que a lista tem uma coleção de itens válida
             if (_listaCompra == null)
                 _listaCompra = new ListaCompra { Itens = new List<ItemCompra>() };
 
             if (_listaCompra.Itens == null)
                 _listaCompra.Itens = new List<ItemCompra>();
 
-            // 1. Carrega o orçamento do mês atual da BD
-            //    Se não existir orçamento definido, _orcamento fica null e
-            //    os labels mostrarão 0,00€ (sem alertas ativos)
+            // 1. Recarrega a lista da BD com os itens e artigos (garante dados frescos)
+            CarregarListaDaBD();
+
+            // 2. Carrega o orçamento do mês atual
             CarregarOrcamento();
 
-            // 2. Carrega os artigos da BD para a ComboBox "Adicionar Item Não Previsto"
-            //    Se a BD ainda não tiver artigos, a ComboBox ficará vazia
-            //    e o utilizador não conseguirá adicionar itens não previstos
+            // 3. Carrega os artigos para o ComboBox de itens não previstos
             CarregarArtigos();
 
-            // 3. Preenche a tabela com os itens já existentes na lista
-            PopularTabelaManual();
+            // 4. Preenche a tabela com os itens da lista
+            PopularTabela();
 
-            // 4. Atualiza os labels do orçamento (máximo, gasto, disponível, alerta)
+            // 5. Atualiza os labels do orçamento
             AtualizarOrcamento();
+        }
+
+        // ── CARREGAR LISTA DA BD ──────────────────────────────────────────────
+
+        // Recarrega a lista completa da BD com todos os itens e artigos
+        // Garante que os dados em memória estão sincronizados com a BD
+        private void CarregarListaDaBD()
+        {
+            var listaBD = _db.ListasCompras
+                .Include("Itens.Artigo")
+                .FirstOrDefault(l => l.Id == _listaCompra.Id);
+
+            if (listaBD != null)
+                _listaCompra = listaBD;
         }
 
         // ── TABELA DE ITENS ───────────────────────────────────────────────────
 
-        // Limpa e redesenha a grelha dgvItens com todos os itens da lista atual
-        // Distingue visualmente ItemPrevisto de ItemNaoPrevisto
-        private void PopularTabelaManual()
+        // Limpa e redesenha a grelha com todos os itens da lista atual
+        private void PopularTabela()
         {
             dgvItens.Rows.Clear();
 
             foreach (var item in _listaCompra.Itens)
             {
-                // Verifica o tipo concreto do item (herança: ItemPrevisto ou ItemNaoPrevisto)
                 bool isPrevisto = item is ItemPrevisto;
-                var prev = item as ItemPrevisto;
+                var prev    = item as ItemPrevisto;
                 var naoPrev = item as ItemNaoPrevisto;
 
-                // Adiciona uma linha na grelha com todos os dados do item
                 dgvItens.Rows.Add(
-                    item.Id,                                                  // colId (hidden)
-                    item.Artigo?.Nome ?? "—",                                 // colArtigo
-                    isPrevisto ? prev.QuantidadePrevista.ToString() : "—",    // colQtdPrevista
-                    item.QuantidadeAdquirida,                                  // colQtdAdquirida (editável)
-                    item.PrecoUnitario,                                        // colPreco (editável)
-                    isPrevisto ? "Previsto" : "Não Previsto",                  // colTipo
-                    naoPrev?.Observacoes ?? ""                                 // colObservacoes
+                    item.Id,
+                    item.Artigo?.Nome ?? "—",
+                    isPrevisto ? prev.QuantidadePrevista.ToString() : "—",
+                    item.QuantidadeAdquirida,
+                    item.PrecoUnitario,
+                    isPrevisto ? "Previsto" : "Não Previsto",
+                    naoPrev?.Observacoes ?? ""
                 );
             }
         }
 
-        // ── ORÇAMENTO ────────────────────────────────────────────────────────
+        // ── ORÇAMENTO ─────────────────────────────────────────────────────────
 
-        // Vai à BD buscar o orçamento definido para o mês e ano atuais
-        // Chama AtualizarOrcamento() para refletir o valor nos labels
+        // Carrega o orçamento do mês/ano atual da BD
         private void CarregarOrcamento()
         {
             int mes = DateTime.Now.Month;
             int ano = DateTime.Now.Year;
 
-            // Tenta encontrar um orçamento para o mês corrente
             _orcamento = _db.Orcamentos
                 .FirstOrDefault(o => o.Mes == mes && o.Ano == ano);
-
-            // Atualiza os labels mesmo que não haja orçamento (mostrarão 0,00€)
-            AtualizarOrcamento();
         }
 
-        // Recalcula e atualiza os três labels de orçamento no topo do form:
-        // - Orçamento máximo definido
-        // - Total já gasto nesta lista
-        // - Valor disponível (pode ser negativo se ultrapassado)
-        // Também controla a visibilidade do label de alerta vermelho
+        // Atualiza os labels do orçamento calculando o total a partir da BD
+        // Usa a BD em vez da memória para garantir valores atualizados após cada edição
         private void AtualizarOrcamento()
         {
-            decimal orcamentoMax = _orcamento?.ValorMaximo ?? 0;  // 0 se não há orçamento definido
-            decimal totalGasto = CalcularTotalGasto();
+            decimal orcamentoMax = _orcamento?.ValorMaximo ?? 0;
+
+            // Calcula o total gasto diretamente da BD (valores atualizados)
+            decimal totalGasto = CalcularTotalGastoDaBD();
             decimal disponivel = orcamentoMax - totalGasto;
 
-            // Atualiza os textos dos labels
-            lblOrcamentoMax.Text = $"Orçamento: {orcamentoMax:C2}";
-            lblTotalGasto.Text = $"Total gasto: {totalGasto:C2}";
-            lblDisponivel.Text = $"Disponível: {disponivel:C2}";
+            // Atualiza também os itens em memória para ficarem consistentes
+            CarregarListaDaBD();
 
-            // Alerta visual: vermelho e label visível se o orçamento foi ultrapassado
+            lblOrcamentoMax.Text = $"Orçamento: {orcamentoMax:C2}";
+            lblTotalGasto.Text   = $"Total gasto: {totalGasto:C2}";
+            lblDisponivel.Text   = $"Disponível: {disponivel:C2}";
+
+            // Alerta visual se o orçamento foi ultrapassado
             if (orcamentoMax > 0 && totalGasto > orcamentoMax)
             {
                 lblDisponivel.ForeColor = Color.Red;
-                lblAlerta.Visible = true;   // label com aviso de orçamento ultrapassado
+                lblAlerta.Visible = true;
             }
             else
             {
@@ -150,104 +152,89 @@ namespace Projeto_DA_MDS.Views
             }
         }
 
-        // Calcula o total gasto somando (quantidade adquirida × preço unitário)
-        // de todos os itens que já têm quantidade adquirida > 0
-        private decimal CalcularTotalGasto()
+        // Calcula o total gasto indo diretamente à BD — evita usar dados desatualizados em memória
+        private decimal CalcularTotalGastoDaBD()
         {
-            return _listaCompra.Itens
-                .Where(i => i.QuantidadeAdquirida > 0)
-                .Sum(i => i.QuantidadeAdquirida * i.PrecoUnitario);
+            return _db.ItensCompra
+                .Where(i => i.ListaCompraId == _listaCompra.Id && i.QuantidadeAdquirida > 0)
+                .Sum(i => (decimal?)(i.QuantidadeAdquirida * i.PrecoUnitario)) ?? 0m;
         }
 
         // ── ARTIGOS PARA O COMBO ──────────────────────────────────────────────
 
-        // Carrega todos os artigos existentes na BD para a ComboBox de itens não previstos
-        // Os artigos são ordenados por nome para facilitar a seleção
+        // Carrega todos os artigos da BD para o ComboBox de itens não previstos
         private void CarregarArtigos()
         {
             try
             {
-                // Carrega os artigos diretamente do DbContext, ordenados por nome
                 var artigos = _db.Artigos.OrderBy(a => a.Nome).ToList();
-
-                cmbArtigo.DataSource = artigos;
-                cmbArtigo.DisplayMember = "Nome";   // texto visível no combo
-                cmbArtigo.ValueMember = "Id";     // valor interno usado para guardar na BD
-                cmbArtigo.SelectedIndex = -1;       // começa sem nenhum selecionado
+                cmbArtigo.DataSource    = artigos;
+                cmbArtigo.DisplayMember = "Nome";
+                cmbArtigo.ValueMember   = "Id";
+                cmbArtigo.SelectedIndex = -1;
             }
             catch (Exception ex)
             {
-                // Mostra o erro ao utilizador — não silencia para não esconder problemas reais
                 MessageBox.Show("Erro ao carregar artigos: " + ex.Message,
                     "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        // ── RECARREGAR ITENS DA BD ────────────────────────────────────────────
-
-        // Recarrega a lista completa da BD (incluindo itens e artigos relacionados)
-        // Chamada após guardar alterações para garantir que a grelha está sincronizada
-        private void CarregarItens()
-        {
-            var listaBD = _db.ListasCompras
-                .Include("Itens.Artigo")  // carrega os artigos relacionados com os itens
-                .FirstOrDefault(l => l.Id == _listaCompra.Id);
-
-            // Substitui a referência local pela versão atualizada da BD
-            if (listaBD != null)
-                _listaCompra = listaBD;
-
-            // Redesenha a tabela e atualiza os valores do orçamento
-            PopularTabelaManual();
-            AtualizarOrcamento();
-        }
-
         // ── EDIÇÃO DIRETA NA TABELA ───────────────────────────────────────────
 
-        // Evento disparado quando o utilizador termina de editar uma célula da grelha
-        // Apenas as colunas "colQtdAdquirida" e "colPreco" são editáveis
-        // Guarda a alteração imediatamente na BD e atualiza o orçamento em tempo real
+        // Disparado quando o utilizador termina de editar uma célula
+        // Guarda a alteração na BD e atualiza os labels do orçamento em tempo real
         private void dgvItens_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            // Ignora linhas inválidas (ex: cabeçalho)
             if (e.RowIndex < 0) return;
 
-            // Lê o Id do item a partir da coluna escondida "colId"
-            int itemId = (int)dgvItens.Rows[e.RowIndex].Cells["colId"].Value;
+            var idCell = dgvItens.Rows[e.RowIndex].Cells["colId"].Value;
+            if (idCell == null) return;
 
-            // Vai à BD buscar o item pelo Id
+            int itemId = (int)idCell;
+            if (itemId <= 0) return;
+
             var item = _db.ItensCompra.Find(itemId);
             if (item == null) return;
 
-            // Verifica qual coluna foi editada e atualiza o campo correspondente
             if (e.ColumnIndex == dgvItens.Columns["colQtdAdquirida"].Index)
             {
-                // Tenta converter o valor introduzido para inteiro
-                if (int.TryParse(dgvItens.Rows[e.RowIndex].Cells["colQtdAdquirida"].Value?.ToString(), out int qtd))
+                if (int.TryParse(
+                    dgvItens.Rows[e.RowIndex].Cells["colQtdAdquirida"].Value?.ToString(),
+                    out int qtd))
                     item.QuantidadeAdquirida = qtd;
             }
             else if (e.ColumnIndex == dgvItens.Columns["colPreco"].Index)
             {
-                // Tenta converter o valor introduzido para decimal
-                if (decimal.TryParse(dgvItens.Rows[e.RowIndex].Cells["colPreco"].Value?.ToString(), out decimal preco))
+                string precoStr = dgvItens.Rows[e.RowIndex].Cells["colPreco"].Value?.ToString()
+                    ?.Replace(",", ".");
+
+                if (decimal.TryParse(precoStr,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out decimal preco))
                     item.PrecoUnitario = preco;
             }
 
-            // Guarda as alterações na BD imediatamente (atualização em tempo real — critério US4)
             _db.SaveChanges();
 
-            // Recalcula e atualiza os labels do orçamento após cada alteração
-            AtualizarOrcamento();
+            // Adia o redesenho para depois do evento CellEndEdit terminar completamente
+            // Evita o erro "reentrant call to SetCurrentCellAddressCore"
+            this.BeginInvoke(new Action(() =>
+            {
+                CarregarListaDaBD();
+                PopularTabela();
+                AtualizarOrcamento();
+            }));
         }
 
         // ── ADICIONAR ITEM NÃO PREVISTO ───────────────────────────────────────
 
-        // Botão "Adicionar Item Não Previsto"
-        // Valida os campos, cria um ItemNaoPrevisto e guarda na BD
-        // O campo Observacoes é obrigatório (critério de aceitação da US4)
+        // Cria um ItemNaoPrevisto e guarda na BD
+        // Observações são obrigatórias (critério de aceitação da US4)
         private void btnAdicionarNaoPrevisto_Click(object sender, EventArgs e)
         {
-            // Valida se um artigo foi selecionado
+            // Validação: tem de estar um artigo selecionado
             if (cmbArtigo.SelectedItem == null)
             {
                 MessageBox.Show("Seleciona um artigo antes de adicionar.",
@@ -255,7 +242,7 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            // Valida se o campo de observações foi preenchido (obrigatório por critério US4)
+            // Validação: observações são obrigatórias para itens não previstos
             if (string.IsNullOrWhiteSpace(tbObservacoes.Text))
             {
                 MessageBox.Show("O campo de observações é obrigatório para itens não previstos.",
@@ -263,32 +250,19 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            // Lê o artigo selecionado no ComboBox
             var artigo = (Artigo)cmbArtigo.SelectedItem;
+            int utilizadorId = Sessao.UtilizadorAtual?.Id ?? 1;
 
-            // Obtém o Id do utilizador com sessão iniciada
-            int utilizadorIdAtual = Sessao.UtilizadorAtual.Id;
-
-            // Cria o novo item não previsto com os dados introduzidos
             var novoItem = new ItemNaoPrevisto
             {
-                ListaCompraId = _listaCompra.Id,    // associa à lista atual
-                ArtigoId = artigo.Id,          // artigo selecionado
-                Artigo = artigo,             // referência ao objeto (para PopularTabelaManual)
-                QuantidadeAdquirida = 1,                 // começa com quantidade 1 (editável na grelha)
-                PrecoUnitario = 0,                  // começa com preço 0 (editável na grelha)
-                Observacoes = tbObservacoes.Text.Trim(),  // observação obrigatória
-                UtilizadorId = utilizadorIdAtual   // registo de quem adicionou
+                ListaCompraId       = _listaCompra.Id,
+                ArtigoId            = artigo.Id,
+                QuantidadeAdquirida = 1,
+                PrecoUnitario       = 0,
+                Observacoes         = tbObservacoes.Text.Trim(),
+                UtilizadorId        = utilizadorId
             };
 
-            // Garante que a coleção de itens está inicializada antes de adicionar
-            if (_listaCompra.Itens == null)
-                _listaCompra.Itens = new List<ItemCompra>();
-
-            // Adiciona à coleção local (para a tabela refletir imediatamente)
-            _listaCompra.Itens.Add(novoItem);
-
-            // Persiste o novo item na BD
             try
             {
                 _db.ItensCompra.Add(novoItem);
@@ -301,23 +275,20 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            // Limpa os campos do formulário de adição para o próximo item
+            // Limpa os campos e atualiza a tabela
             tbObservacoes.Clear();
             cmbArtigo.SelectedIndex = -1;
 
-            // Atualiza a tabela e o painel do orçamento
-            PopularTabelaManual();
+            CarregarListaDaBD();
+            PopularTabela();
             AtualizarOrcamento();
         }
 
         // ── FECHAR COMPRA ─────────────────────────────────────────────────────
 
-        // Botão "Fechar Compra"
-        // Pede confirmação, altera o estado para "Fechada",
-        // regista data/hora e utilizador responsável (critério US4) e fecha o form
+        // Fecha a compra — regista data/hora e utilizador, muda estado para "Fechada"
         private void btnFecharCompra_Click(object sender, EventArgs e)
         {
-            // Pede confirmação antes de fechar — operação irreversível
             var confirmacao = MessageBox.Show(
                 "Tens a certeza que queres fechar esta compra?\nNão poderás fazer mais alterações.",
                 "Fechar Compra",
@@ -328,32 +299,29 @@ namespace Projeto_DA_MDS.Views
 
             try
             {
-                // Carrega a lista da BD para garantir que estamos a alterar o registo atual
                 var lista = _db.ListasCompras.Find(_listaCompra.Id);
 
                 if (lista == null)
                 {
-                    MessageBox.Show("Erro: lista não encontrada na base de dados.",
+                    MessageBox.Show("Erro: lista não encontrada.",
                         "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
-                // Atualiza o estado e regista os dados de fecho (critério US4)
-                lista.Estado = "Fechada";
-                lista.DataFecho = DateTime.Now;                    // data e hora do fecho
-                lista.UtilizadorAlterouId = Sessao.UtilizadorAtual.Id;   // utilizador responsável
-                lista.DataAlteracao = DateTime.Now;
+                // Atualiza o estado e regista os dados de fecho
+                lista.Estado              = "Fechada";
+                lista.DataFecho           = DateTime.Now;
+                lista.UtilizadorAlterouId = Sessao.UtilizadorAtual.Id;
+                lista.DataAlteracao       = DateTime.Now;
 
                 _db.SaveChanges();
 
-                // Informa o utilizador com o resumo do fecho
                 MessageBox.Show(
                     $"Compra fechada com sucesso!\nData: {lista.DataFecho:dd/MM/yyyy HH:mm}\nUtilizador: {Sessao.UtilizadorAtual.Username}",
                     "Compra Fechada",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
 
-                // Fecha o formulário — o FormPrincipal irá recarregar a lista de compras abertas
                 this.Close();
             }
             catch (Exception ex)
@@ -365,8 +333,7 @@ namespace Projeto_DA_MDS.Views
 
         // ── FECHAR FORMULÁRIO ─────────────────────────────────────────────────
 
-        // Evento disparado quando o form é fechado (pelo X ou pelo btnFecharCompra)
-        // Liberta o contexto da BD para evitar fugas de memória
+        // Liberta o contexto da BD ao fechar o form
         private void FormModoCompra_FormClosing(object sender, FormClosingEventArgs e)
         {
             _db?.Dispose();
