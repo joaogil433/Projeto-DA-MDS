@@ -78,14 +78,14 @@
             // 
             this.dgvOrcamentos.AllowUserToAddRows = false;
             this.dgvOrcamentos.ColumnHeadersHeight = 29;
-            this.dgvOrcamentos.Location = new System.Drawing.Point(201, 84);
+            this.dgvOrcamentos.Location = new System.Drawing.Point(121, 84);
             this.dgvOrcamentos.MultiSelect = false;
             this.dgvOrcamentos.Name = "dgvOrcamentos";
             this.dgvOrcamentos.ReadOnly = true;
             this.dgvOrcamentos.RowHeadersWidth = 51;
             this.dgvOrcamentos.RowTemplate.Height = 24;
             this.dgvOrcamentos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvOrcamentos.Size = new System.Drawing.Size(406, 232);
+            this.dgvOrcamentos.Size = new System.Drawing.Size(486, 232);
             this.dgvOrcamentos.TabIndex = 2;
             // 
             // labelMes
