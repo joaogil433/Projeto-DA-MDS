@@ -32,11 +32,12 @@ namespace Projeto_DA_MDS.Views
             InitializeComponent();
         }
 
+        private int _listaId;
         // Construtor real — chamado pelo FormPrincipal ao abrir o modo compra
-        public FormModoCompra(ListaCompra listaCompra)
+        public FormModoCompra(int listaId)
         {
             InitializeComponent();
-            _listaCompra = listaCompra;
+            _listaId = listaId;
             _db = new IshoppingContext();
         }
 
@@ -49,8 +50,7 @@ namespace Projeto_DA_MDS.Views
                 _db = new IshoppingContext();
 
             // Segurança: garante que a lista tem uma coleção de itens válida
-            if (_listaCompra == null)
-                _listaCompra = new ListaCompra { Itens = new List<ItemCompra>() };
+            _listaCompra = new ListaCompra { Id = _listaId, Itens = new List<ItemCompra>() };
 
             if (_listaCompra.Itens == null)
                 _listaCompra.Itens = new List<ItemCompra>();

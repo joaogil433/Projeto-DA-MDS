@@ -38,6 +38,7 @@ namespace Projeto_DA_MDS.Views
                 colId.Visible = false;
 
                 DataGridViewTextBoxColumn colNome = new DataGridViewTextBoxColumn();
+                colNome.Name = "colNome";
                 colNome.DataPropertyName = "Nome";
                 colNome.HeaderText = "Nome da Compra";
                 colNome.FillWeight = 300;
@@ -85,8 +86,7 @@ namespace Projeto_DA_MDS.Views
             int id = (int)dgvComprasAbertas.SelectedRows[0].Cells["Id"].Value;
 
             // TODO: descomentar quando o FormModoCompra (Pessoa 3 - Rafael) estiver criado
-            ListaCompra lista = listaCtrl.GetById(id);
-            FormModoCompra form = new FormModoCompra(lista);
+            FormModoCompra form = new FormModoCompra(id);
             form.FormClosed += new FormClosedEventHandler(SubForm_FormClosed);
             form.ShowDialog();
 
