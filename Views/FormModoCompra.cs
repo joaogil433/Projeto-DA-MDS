@@ -32,12 +32,12 @@ namespace Projeto_DA_MDS.Views
             InitializeComponent();
         }
 
-        private int _listaId;
         // Construtor real — chamado pelo FormPrincipal ao abrir o modo compra
-        public FormModoCompra(int listaId)
+        // Recebe a lista já carregada da BD
+        public FormModoCompra(ListaCompra listaCompra)
         {
             InitializeComponent();
-            _listaId = listaId;
+            _listaCompra = listaCompra;  // guarda a lista passada pelo FormPrincipal
             _db = new IshoppingContext();
         }
 
@@ -46,11 +46,14 @@ namespace Projeto_DA_MDS.Views
         private void FormModoCompra_Load(object sender, EventArgs e)
         {
             // Segurança: garante que o contexto está inicializado
+            // (caso o construtor vazio tenha sido usado pelo Designer)
             if (_db == null)
                 _db = new IshoppingContext();
 
-            // Segurança: garante que a lista tem uma coleção de itens válida
-            _listaCompra = new ListaCompra { Id = _listaId, Itens = new List<ItemCompra>() };
+            // Segurança: garante que a lista não é null
+            // (só acontece se o Designer abrir o form diretamente)
+            if (_listaCompra == null)
+                _listaCompra = new ListaCompra { Itens = new List<ItemCompra>() };
 
             if (_listaCompra.Itens == null)
                 _listaCompra.Itens = new List<ItemCompra>();
@@ -95,7 +98,7 @@ namespace Projeto_DA_MDS.Views
             foreach (var item in _listaCompra.Itens)
             {
                 bool isPrevisto = item is ItemPrevisto;
-                var prev    = item as ItemPrevisto;
+                var prev = item as ItemPrevisto;
                 var naoPrev = item as ItemNaoPrevisto;
 
                 dgvItens.Rows.Add(
@@ -122,24 +125,21 @@ namespace Projeto_DA_MDS.Views
                 .FirstOrDefault(o => o.Mes == mes && o.Ano == ano);
         }
 
-        // Atualiza os labels do orçamento calculando o total a partir da BD
-        // Usa a BD em vez da memória para garantir valores atualizados após cada edição
+        // Atualiza os labels do orçamento calculando o total diretamente da BD
         private void AtualizarOrcamento()
         {
             decimal orcamentoMax = _orcamento?.ValorMaximo ?? 0;
-
-            // Calcula o total gasto diretamente da BD (valores atualizados)
             decimal totalGasto = CalcularTotalGastoDaBD();
             decimal disponivel = orcamentoMax - totalGasto;
 
-            // Atualiza também os itens em memória para ficarem consistentes
+            // Atualiza os itens em memória para ficarem consistentes
             CarregarListaDaBD();
 
             lblOrcamentoMax.Text = $"Orçamento: {orcamentoMax:C2}";
-            lblTotalGasto.Text   = $"Total gasto: {totalGasto:C2}";
-            lblDisponivel.Text   = $"Disponível: {disponivel:C2}";
+            lblTotalGasto.Text = $"Total gasto: {totalGasto:C2}";
+            lblDisponivel.Text = $"Disponível: {disponivel:C2}";
 
-            // Alerta visual se o orçamento foi ultrapassado
+            // Alerta visual a vermelho se o orçamento foi ultrapassado
             if (orcamentoMax > 0 && totalGasto > orcamentoMax)
             {
                 lblDisponivel.ForeColor = Color.Red;
@@ -152,7 +152,7 @@ namespace Projeto_DA_MDS.Views
             }
         }
 
-        // Calcula o total gasto indo diretamente à BD — evita usar dados desatualizados em memória
+        // Calcula o total gasto diretamente da BD — evita usar dados desatualizados em memória
         private decimal CalcularTotalGastoDaBD()
         {
             return _db.ItensCompra
@@ -168,9 +168,9 @@ namespace Projeto_DA_MDS.Views
             try
             {
                 var artigos = _db.Artigos.OrderBy(a => a.Nome).ToList();
-                cmbArtigo.DataSource    = artigos;
+                cmbArtigo.DataSource = artigos;
                 cmbArtigo.DisplayMember = "Nome";
-                cmbArtigo.ValueMember   = "Id";
+                cmbArtigo.ValueMember = "Id";
                 cmbArtigo.SelectedIndex = -1;
             }
             catch (Exception ex)
@@ -188,15 +188,18 @@ namespace Projeto_DA_MDS.Views
         {
             if (e.RowIndex < 0) return;
 
+            // lê o Id do item da coluna escondida
             var idCell = dgvItens.Rows[e.RowIndex].Cells["colId"].Value;
             if (idCell == null) return;
 
             int itemId = (int)idCell;
             if (itemId <= 0) return;
 
+            // vai à BD buscar o item pelo Id
             var item = _db.ItensCompra.Find(itemId);
             if (item == null) return;
 
+            // atualiza o campo correspondente à coluna editada
             if (e.ColumnIndex == dgvItens.Columns["colQtdAdquirida"].Index)
             {
                 if (int.TryParse(
@@ -206,6 +209,7 @@ namespace Projeto_DA_MDS.Views
             }
             else if (e.ColumnIndex == dgvItens.Columns["colPreco"].Index)
             {
+                // aceita tanto vírgula como ponto como separador decimal
                 string precoStr = dgvItens.Rows[e.RowIndex].Cells["colPreco"].Value?.ToString()
                     ?.Replace(",", ".");
 
@@ -216,10 +220,11 @@ namespace Projeto_DA_MDS.Views
                     item.PrecoUnitario = preco;
             }
 
+            // guarda na BD imediatamente
             _db.SaveChanges();
 
-            // Adia o redesenho para depois do evento CellEndEdit terminar completamente
-            // Evita o erro "reentrant call to SetCurrentCellAddressCore"
+            // adia o redesenho para depois do evento CellEndEdit terminar
+            // evita o erro "reentrant call to SetCurrentCellAddressCore"
             this.BeginInvoke(new Action(() =>
             {
                 CarregarListaDaBD();
@@ -234,7 +239,7 @@ namespace Projeto_DA_MDS.Views
         // Observações são obrigatórias (critério de aceitação da US4)
         private void btnAdicionarNaoPrevisto_Click(object sender, EventArgs e)
         {
-            // Validação: tem de estar um artigo selecionado
+            // validação: tem de estar um artigo selecionado
             if (cmbArtigo.SelectedItem == null)
             {
                 MessageBox.Show("Seleciona um artigo antes de adicionar.",
@@ -242,7 +247,7 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            // Validação: observações são obrigatórias para itens não previstos
+            // validação: observações são obrigatórias para itens não previstos
             if (string.IsNullOrWhiteSpace(tbObservacoes.Text))
             {
                 MessageBox.Show("O campo de observações é obrigatório para itens não previstos.",
@@ -255,12 +260,12 @@ namespace Projeto_DA_MDS.Views
 
             var novoItem = new ItemNaoPrevisto
             {
-                ListaCompraId       = _listaCompra.Id,
-                ArtigoId            = artigo.Id,
+                ListaCompraId = _listaCompra.Id,
+                ArtigoId = artigo.Id,
                 QuantidadeAdquirida = 1,
-                PrecoUnitario       = 0,
-                Observacoes         = tbObservacoes.Text.Trim(),
-                UtilizadorId        = utilizadorId
+                PrecoUnitario = 0,
+                Observacoes = tbObservacoes.Text.Trim(),
+                UtilizadorId = utilizadorId
             };
 
             try
@@ -275,7 +280,7 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            // Limpa os campos e atualiza a tabela
+            // limpa os campos e atualiza a tabela
             tbObservacoes.Clear();
             cmbArtigo.SelectedIndex = -1;
 
@@ -308,11 +313,11 @@ namespace Projeto_DA_MDS.Views
                     return;
                 }
 
-                // Atualiza o estado e regista os dados de fecho
-                lista.Estado              = "Fechada";
-                lista.DataFecho           = DateTime.Now;
+                // atualiza o estado e regista os dados de fecho
+                lista.Estado = "Fechada";
+                lista.DataFecho = DateTime.Now;
                 lista.UtilizadorAlterouId = Sessao.UtilizadorAtual.Id;
-                lista.DataAlteracao       = DateTime.Now;
+                lista.DataAlteracao = DateTime.Now;
 
                 _db.SaveChanges();
 
@@ -333,7 +338,7 @@ namespace Projeto_DA_MDS.Views
 
         // ── FECHAR FORMULÁRIO ─────────────────────────────────────────────────
 
-        // Liberta o contexto da BD ao fechar o form
+        // liberta o contexto da BD ao fechar o form
         private void FormModoCompra_FormClosing(object sender, FormClosingEventArgs e)
         {
             _db?.Dispose();
