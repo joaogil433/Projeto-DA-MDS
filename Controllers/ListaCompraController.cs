@@ -1,4 +1,12 @@
-﻿using Projeto_DA_MDS.Models;
+﻿// ListaCompraController.cs
+// Responsabilidade: lógica de negócio para a gestão de listas de compras (US3, US4)
+// Regras principais:
+//   - Uma lista começa sempre com estado "Aberta"
+//   - Listas fechadas não podem ser editadas nem eliminadas
+//   - Não é possível adicionar o mesmo artigo duas vezes à mesma lista
+//   - Regista sempre quem criou e quem alterou
+
+using Projeto_DA_MDS.Models;
 using System.Data.Entity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +16,10 @@ namespace Projeto_DA_MDS.Controllers
 {
     public class ListaCompraController
     {
-        // Devolve todas as listas de compras ordenadas da mais recente
+        // ── LEITURA ───────────────────────────────────────────────────────────
+
+        // Devolve todas as listas de compras ordenadas da mais recente para a mais antiga
+        // Carrega os utilizadores que criaram e alteraram (para auditoria na View)
         public List<ListaCompra> GetAll()
         {
             try
@@ -55,7 +66,8 @@ namespace Projeto_DA_MDS.Controllers
             return GetByEstado("Aberta");
         }
 
-        // Devolve uma lista completa com todos os seus itens e artigos carregados
+        // Devolve uma lista completa com todos os seus itens, artigos e tipos carregados
+        // Usado no FormModoCompra para ter todos os dados disponíveis sem lazy loading
         public ListaCompra GetById(int id)
         {
             try
@@ -75,11 +87,39 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
+        // Devolve apenas os itens previstos de uma lista, com o Artigo e o Tipo carregados
+        // Usado no FormCriacaoEdicaoCompra para preencher a grelha de itens
+        // NOTA: usa Include com strings em vez de lambdas porque o .OfType<>()
+        //       não é compatível com Include por lambda no Entity Framework 6
+        public List<ItemPrevisto> GetItensPrevistos(int listaId)
+        {
+            try
+            {
+                using (var db = new IshoppingContext())
+                {
+                    return db.ItensCompra
+                        .OfType<ItemPrevisto>()
+                        .Where(i => i.ListaCompraId == listaId)
+                        .Include("Artigo")       // carrega o artigo associado ao item
+                        .Include("Artigo.Tipo")  // carrega o tipo do artigo
+                        .ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Erro ao obter itens previstos: " + ex.Message);
+            }
+        }
+
+        // ── ESCRITA — LISTAS ──────────────────────────────────────────────────
+
         // Cria uma nova lista de compras com estado "Aberta"
+        // Regista o utilizador criador e a data de criação
         public bool Add(string nome, int utilizadorCriouId, out string mensagem)
         {
             mensagem = "";
 
+            // Validação: o nome não pode estar vazio
             if (string.IsNullOrWhiteSpace(nome))
             {
                 mensagem = "O nome da compra não pode estar vazio.";
@@ -90,11 +130,12 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Cria a nova lista com dados de auditoria
                     ListaCompra novaLista = new ListaCompra();
                     novaLista.Nome = nome.Trim();
                     novaLista.DataCriacao = DateTime.Now;
                     novaLista.DataAlteracao = DateTime.Now;
-                    novaLista.Estado = "Aberta";
+                    novaLista.Estado = "Aberta";           // começa sempre aberta
                     novaLista.UtilizadorCriouId = utilizadorCriouId;
                     novaLista.UtilizadorAlterouId = utilizadorCriouId;
 
@@ -112,11 +153,13 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Atualiza o nome de uma lista. Só permitido se a lista estiver "Aberta"
+        // Atualiza o nome de uma lista
+        // Regra: só é permitido alterar listas com estado "Aberta"
         public bool Update(int id, string nome, int utilizadorAlterouId, out string mensagem)
         {
             mensagem = "";
 
+            // Validação: o nome não pode estar vazio
             if (string.IsNullOrWhiteSpace(nome))
             {
                 mensagem = "O nome da compra não pode estar vazio.";
@@ -135,12 +178,14 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Regra de negócio: listas fechadas não podem ser editadas
                     if (lista.Estado == "Fechada")
                     {
                         mensagem = "Não é possível alterar uma compra fechada.";
                         return false;
                     }
 
+                    // Atualiza o nome e regista a auditoria de alteração
                     lista.Nome = nome.Trim();
                     lista.DataAlteracao = DateTime.Now;
                     lista.UtilizadorAlterouId = utilizadorAlterouId;
@@ -159,6 +204,7 @@ namespace Projeto_DA_MDS.Controllers
         }
 
         // Elimina uma lista e todos os seus itens
+        // O Include("Itens") garante que o EF elimina os itens em cascata
         public bool Delete(int id, out string mensagem)
         {
             mensagem = "";
@@ -167,6 +213,7 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Carrega a lista com os seus itens para garantir eliminação em cascata
                     ListaCompra lista = db.ListasCompras
                         .Include(l => l.Itens)
                         .FirstOrDefault(l => l.Id == id);
@@ -191,31 +238,18 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Devolve apenas os itens previstos de uma lista
-        public List<ItemPrevisto> GetItensPrevistos(int listaId)
-        {
-            try
-            {
-                using (var db = new IshoppingContext())
-                {
-                    return db.ItensCompra
-                        .OfType<ItemPrevisto>()
-                        .Where(i => i.ListaCompraId == listaId)
-                        .Include(i => i.Artigo.Tipo)
-                        .ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Erro ao obter itens previstos: " + ex.Message);
-            }
-        }
+        // ── ESCRITA — ITENS ───────────────────────────────────────────────────
 
         // Adiciona um item previsto a uma lista aberta
+        // Regras:
+        //   - A lista tem de estar "Aberta"
+        //   - A quantidade tem de ser maior que zero
+        //   - O mesmo artigo não pode ser adicionado duas vezes à mesma lista
         public bool AddItemPrevisto(int listaId, int artigoId, int quantidade, out string mensagem)
         {
             mensagem = "";
 
+            // Validação: quantidade tem de ser positiva
             if (quantidade <= 0)
             {
                 mensagem = "A quantidade tem de ser maior que zero.";
@@ -234,12 +268,14 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Regra de negócio: não pode adicionar itens a uma lista fechada
                     if (lista.Estado == "Fechada")
                     {
                         mensagem = "A compra está fechada.";
                         return false;
                     }
 
+                    // Regra de negócio: não pode repetir o mesmo artigo na mesma lista
                     bool artigoJaAdicionado = db.ItensCompra
                         .OfType<ItemPrevisto>()
                         .Any(i => i.ListaCompraId == listaId && i.ArtigoId == artigoId);
@@ -250,6 +286,8 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Cria o novo item previsto com quantidade adquirida e preço a zero
+                    // (serão preenchidos durante a execução da compra no FormModoCompra)
                     ItemPrevisto novoItem = new ItemPrevisto();
                     novoItem.ListaCompraId = listaId;
                     novoItem.ArtigoId = artigoId;
@@ -272,7 +310,7 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Remove um item previsto da lista
+        // Remove um item previsto da lista pelo Id do item
         public bool RemoveItemPrevisto(int itemId, out string mensagem)
         {
             mensagem = "";
@@ -281,6 +319,7 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Vai à BD buscar o item pelo Id, filtrando apenas ItemPrevisto
                     ItemPrevisto item = db.ItensCompra
                         .OfType<ItemPrevisto>()
                         .FirstOrDefault(i => i.Id == itemId);

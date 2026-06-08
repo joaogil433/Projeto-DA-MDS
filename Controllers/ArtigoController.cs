@@ -1,4 +1,10 @@
-﻿using Projeto_DA_MDS.Models;
+﻿// ArtigoController.cs
+// Responsabilidade: lógica de negócio para a gestão de artigos (CRUD de Artigos)
+// Regras principais:
+//   - O nome do artigo tem de ser único dentro do mesmo tipo
+//   - Não é possível eliminar artigos que estejam associados a itens de compra
+
+using Projeto_DA_MDS.Models;
 using System.Data.Entity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +14,10 @@ namespace Projeto_DA_MDS.Controllers
 {
     public class ArtigoController
     {
-        // Devolve todos os artigos com o Tipo carregado, ordenados por Tipo e depois por Nome
+        // ── LEITURA ───────────────────────────────────────────────────────────
+
+        // Devolve todos os artigos com o Tipo carregado
+        // Ordenados primeiro por nome do tipo, depois por nome do artigo
         public List<Artigo> GetAll()
         {
             try
@@ -16,9 +25,9 @@ namespace Projeto_DA_MDS.Controllers
                 using (var db = new IshoppingContext())
                 {
                     return db.Artigos
-                        .Include(a => a.Tipo)
-                        .OrderBy(a => a.Tipo.Nome)
-                        .ThenBy(a => a.Nome)
+                        .Include(a => a.Tipo)           // carrega a propriedade de navegação Tipo
+                        .OrderBy(a => a.Tipo.Nome)      // ordena por tipo
+                        .ThenBy(a => a.Nome)            // depois por nome do artigo
                         .ToList();
                 }
             }
@@ -28,7 +37,8 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Devolve os artigos de um tipo específico — usado para filtrar o ComboBox de artigos
+        // Devolve os artigos de um tipo específico
+        // Usado para filtrar o ComboBox de artigos no formulário de criação de compras
         public List<Artigo> GetByTipo(int tipoArtigoId)
         {
             try
@@ -66,11 +76,16 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Cria um novo artigo. Devolve true se correu bem, false se houve erro de validação
+        // ── ESCRITA ───────────────────────────────────────────────────────────
+
+        // Cria um novo artigo
+        // Regra: o nome tem de ser único dentro do mesmo tipo de artigo
+        // Devolve true se criado com sucesso; false com mensagem de erro em caso de falha
         public bool Add(string nome, int tipoArtigoId, out string mensagem)
         {
             mensagem = "";
 
+            // Validação: o nome não pode estar vazio
             if (string.IsNullOrWhiteSpace(nome))
             {
                 mensagem = "O nome do artigo não pode estar vazio.";
@@ -81,6 +96,7 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Verifica se já existe um artigo com o mesmo nome neste tipo (case-insensitive)
                     bool existe = db.Artigos.Any(a =>
                         a.Nome.ToLower() == nome.Trim().ToLower() &&
                         a.TipoArtigoId == tipoArtigoId);
@@ -91,6 +107,7 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Cria e guarda o novo artigo
                     Artigo novoArtigo = new Artigo();
                     novoArtigo.Nome = nome.Trim();
                     novoArtigo.TipoArtigoId = tipoArtigoId;
@@ -110,10 +127,12 @@ namespace Projeto_DA_MDS.Controllers
         }
 
         // Atualiza o nome e o tipo de um artigo existente
+        // Verifica duplicado excluindo o próprio artigo que está a ser editado
         public bool Update(int id, string nome, int tipoArtigoId, out string mensagem)
         {
             mensagem = "";
 
+            // Validação: o nome não pode estar vazio
             if (string.IsNullOrWhiteSpace(nome))
             {
                 mensagem = "O nome do artigo não pode estar vazio.";
@@ -124,6 +143,7 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Vai à BD buscar o artigo pelo Id
                     Artigo artigo = db.Artigos.Find(id);
 
                     if (artigo == null)
@@ -144,6 +164,7 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Atualiza os campos
                     artigo.Nome = nome.Trim();
                     artigo.TipoArtigoId = tipoArtigoId;
                     db.SaveChanges();
@@ -159,7 +180,8 @@ namespace Projeto_DA_MDS.Controllers
             }
         }
 
-        // Elimina um artigo. Protege contra eliminação se estiver em uso em compras
+        // Elimina um artigo pelo Id
+        // Proteção: não permite eliminar se o artigo estiver associado a itens de compra
         public bool Delete(int id, out string mensagem)
         {
             mensagem = "";
@@ -168,6 +190,7 @@ namespace Projeto_DA_MDS.Controllers
             {
                 using (var db = new IshoppingContext())
                 {
+                    // Vai à BD buscar o artigo pelo Id
                     Artigo artigo = db.Artigos.Find(id);
 
                     if (artigo == null)
@@ -176,6 +199,7 @@ namespace Projeto_DA_MDS.Controllers
                         return false;
                     }
 
+                    // Verifica se o artigo está em uso em algum item de compra
                     bool emUso = db.ItensCompra.Any(i => i.ArtigoId == id);
 
                     if (emUso)

@@ -17,7 +17,14 @@ namespace Projeto_DA_MDS
             Database.SetInitializer(new IshoppingDbInitializer());
             using (var db = new IshoppingContext())
             {
-                db.Database.Initialize(false);
+                try
+                {
+                    db.Database.Initialize(false);
+                }
+                catch (Exception ex){
+                    MessageBox.Show("Erro ao ligar à base de dados:\n" + ex.Message, "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
             }
 
 

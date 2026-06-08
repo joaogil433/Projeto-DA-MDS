@@ -44,66 +44,38 @@ namespace Projeto_DA_MDS.Views
         {
             try
             {
-                // Obtém todos os orçamentos ordenados do mais recente
                 List<Orcamento> lista = orcamentoCtrl.GetAll();
 
-                // Limpa a fonte anterior e define as colunas manualmente
                 dgvOrcamentos.DataSource = null;
                 dgvOrcamentos.AutoGenerateColumns = false;
+                dgvOrcamentos.Rows.Clear();
                 dgvOrcamentos.Columns.Clear();
+                dgvOrcamentos.AllowUserToAddRows = false;
 
-                // Coluna Id — escondida, usada para identificar o registo no CRUD
                 DataGridViewTextBoxColumn colId = new DataGridViewTextBoxColumn();
-                colId.DataPropertyName = "Id";
-                colId.HeaderText = "ID";
-                colId.Visible = false;
+                colId.Name = "colId"; colId.HeaderText = "ID"; colId.Visible = false;
 
-                // Coluna Mês — preenchida manualmente abaixo (não mapeia diretamente)
                 DataGridViewTextBoxColumn colMes = new DataGridViewTextBoxColumn();
-                colMes.Name = "colMes";
-                colMes.HeaderText = "Mês";
-                colMes.FillWeight = 60;
+                colMes.Name = "colMes"; colMes.HeaderText = "Mês"; colMes.FillWeight = 60;
 
-                // Coluna Ano — preenchida manualmente abaixo
                 DataGridViewTextBoxColumn colAno = new DataGridViewTextBoxColumn();
-                colAno.Name = "colAno";
-                colAno.HeaderText = "Ano";
-                colAno.FillWeight = 70;
+                colAno.Name = "colAno"; colAno.HeaderText = "Ano"; colAno.FillWeight = 70;
 
-                // Coluna Valor — ValorMaximo é o nome correto no modelo Orcamento
                 DataGridViewTextBoxColumn colValor = new DataGridViewTextBoxColumn();
-                colValor.DataPropertyName = "ValorMaximo";
-                colValor.HeaderText = "Orçamento (€)";
-                colValor.FillWeight = 120;
-                colValor.DefaultCellStyle.Format = "C2"; // Formato monetário com 2 casas decimais
+                colValor.Name = "colValor"; colValor.HeaderText = "Orçamento (€)"; colValor.FillWeight = 120;
 
-                // Coluna criador — preenchida manualmente a partir da propriedade de navegação
                 DataGridViewTextBoxColumn colCriador = new DataGridViewTextBoxColumn();
-                colCriador.Name = "colCriador";
-                colCriador.HeaderText = "Criado Por";
-                colCriador.FillWeight = 130;
+                colCriador.Name = "colCriador"; colCriador.HeaderText = "Criado Por"; colCriador.FillWeight = 130;
 
-                // Coluna data criação — mapeada diretamente com formato de data/hora
                 DataGridViewTextBoxColumn colCriacao = new DataGridViewTextBoxColumn();
-                colCriacao.DataPropertyName = "DataCriacao";
-                colCriacao.HeaderText = "Data Criação";
-                colCriacao.FillWeight = 120;
-                colCriacao.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                colCriacao.Name = "colCriacao"; colCriacao.HeaderText = "Data Criação"; colCriacao.FillWeight = 120;
 
-                // Coluna alterador — preenchida manualmente
                 DataGridViewTextBoxColumn colAlterador = new DataGridViewTextBoxColumn();
-                colAlterador.Name = "colAlterador";
-                colAlterador.HeaderText = "Alterado Por";
-                colAlterador.FillWeight = 130;
+                colAlterador.Name = "colAlterador"; colAlterador.HeaderText = "Alterado Por"; colAlterador.FillWeight = 130;
 
-                // Coluna data alteração
                 DataGridViewTextBoxColumn colAlteracao = new DataGridViewTextBoxColumn();
-                colAlteracao.DataPropertyName = "DataAlteracao";
-                colAlteracao.HeaderText = "Data Alteração";
-                colAlteracao.FillWeight = 120;
-                colAlteracao.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+                colAlteracao.Name = "colAlteracao"; colAlteracao.HeaderText = "Data Alteração"; colAlteracao.FillWeight = 120;
 
-                // Adiciona todas as colunas à grelha
                 dgvOrcamentos.Columns.Add(colId);
                 dgvOrcamentos.Columns.Add(colMes);
                 dgvOrcamentos.Columns.Add(colAno);
@@ -112,38 +84,21 @@ namespace Projeto_DA_MDS.Views
                 dgvOrcamentos.Columns.Add(colCriacao);
                 dgvOrcamentos.Columns.Add(colAlterador);
                 dgvOrcamentos.Columns.Add(colAlteracao);
-                // Liga a lista à grelha
-                dgvOrcamentos.DataSource = lista;
                 dgvOrcamentos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-                // Preenche as colunas calculadas manualmente (propriedades de navegação)
-                for (int i = 0; i < lista.Count; i++)
+                // Preenche tudo manualmente — sem DataSource para evitar conflitos
+                foreach (Orcamento o in lista)
                 {
-                    Orcamento o = lista[i];
-
-                    // D2 garante sempre dois dígitos (ex: "05" em vez de "5")
-                    dgvOrcamentos.Rows[i].Cells["colMes"].Value = o.Mes.ToString("D2");
-                    dgvOrcamentos.Rows[i].Cells["colAno"].Value = o.Ano;
-
-                    // UtilizadorCriou é o nome da propriedade de navegação no modelo Orcamento
-                    if (o.UtilizadorCriou != null)
-                    {
-                        dgvOrcamentos.Rows[i].Cells["colCriador"].Value = o.UtilizadorCriou.Nome;
-                    }
-                    else
-                    {
-                        dgvOrcamentos.Rows[i].Cells["colCriador"].Value = "—";
-                    }
-
-                    // UtilizadorAlterou é o nome da propriedade de navegação no modelo Orcamento
-                    if (o.UtilizadorAlterou != null)
-                    {
-                        dgvOrcamentos.Rows[i].Cells["colAlterador"].Value = o.UtilizadorAlterou.Nome;
-                    }
-                    else
-                    {
-                        dgvOrcamentos.Rows[i].Cells["colAlterador"].Value = "—";
-                    }
+                    dgvOrcamentos.Rows.Add(
+                        o.Id,
+                        o.Mes.ToString("D2"),
+                        o.Ano,
+                        o.ValorMaximo.ToString("C2"),
+                        o.UtilizadorCriou != null ? o.UtilizadorCriou.Nome : "—",
+                        o.DataCriacao.ToString("dd/MM/yyyy HH:mm"),
+                        o.UtilizadorAlterou != null ? o.UtilizadorAlterou.Nome : "—",
+                        o.DataAlteracao.HasValue ? o.DataAlteracao.Value.ToString("dd/MM/yyyy HH:mm") : "—"
+                    );
                 }
 
                 AtualizarBotoes();
@@ -185,7 +140,7 @@ namespace Projeto_DA_MDS.Views
             try
             {
                 // Lê o Id da linha selecionada
-                idSelecionado = (int)dgvOrcamentos.SelectedRows[0].Cells["Id"].Value;
+                idSelecionado = (int)dgvOrcamentos.SelectedRows[0].Cells["colId"].Value;
 
                 // Obtém o orçamento completo da BD (com os utilizadores carregados)
                 Orcamento orc = orcamentoCtrl.GetById(idSelecionado);
@@ -325,7 +280,7 @@ namespace Projeto_DA_MDS.Views
                 return;
             }
 
-            int id = (int)dgvOrcamentos.SelectedRows[0].Cells["Id"].Value;
+            int id = (int)dgvOrcamentos.SelectedRows[0].Cells["colId"].Value;
 
             // Lê os valores de mês e ano para a mensagem de confirmação
             object mes = dgvOrcamentos.SelectedRows[0].Cells["colMes"].Value;
