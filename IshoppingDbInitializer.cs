@@ -29,6 +29,29 @@ namespace Projeto_DA_MDS
             });
 
             context.SaveChanges();
+
+            context.Artigos.AddRange(new List<Artigo>
+            {
+                new Artigo { Nome = "Arroz",            TipoArtigoId = 1 },
+                new Artigo { Nome = "Massa",            TipoArtigoId = 1 },
+                new Artigo { Nome = "Feijão",           TipoArtigoId = 1 },
+                new Artigo { Nome = "Azeite",           TipoArtigoId = 1 },
+                new Artigo { Nome = "Leite",            TipoArtigoId = 1 },
+                new Artigo { Nome = "Pão",              TipoArtigoId = 1 },
+                new Artigo { Nome = "Ovos",             TipoArtigoId = 1 },
+
+                new Artigo { Nome = "Champô",           TipoArtigoId = 2 },
+                new Artigo { Nome = "Pasta de Dentes",  TipoArtigoId = 2 },
+                new Artigo { Nome = "Sabonete",         TipoArtigoId = 2 },
+                new Artigo { Nome = "Papel Higiénico",  TipoArtigoId = 2 },
+
+                new Artigo { Nome = "Detergente Roupa", TipoArtigoId = 3 },
+                new Artigo { Nome = "Lava-Louça",       TipoArtigoId = 3 },
+                new Artigo { Nome = "Desinfetante",     TipoArtigoId = 3 },
+                new Artigo { Nome = "Esponjas",         TipoArtigoId = 3 },
+            }); 
+
+            context.SaveChanges();
             base.Seed(context);
         }
     }

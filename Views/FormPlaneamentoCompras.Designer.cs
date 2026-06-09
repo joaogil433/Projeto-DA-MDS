@@ -50,7 +50,7 @@
             this.panelFormulario.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelFormulario.Location = new System.Drawing.Point(0, 0);
             this.panelFormulario.Name = "panelFormulario";
-            this.panelFormulario.Size = new System.Drawing.Size(800, 70);
+            this.panelFormulario.Size = new System.Drawing.Size(1012, 70);
             this.panelFormulario.TabIndex = 1;
             // 
             // labelPlaneamentoCompras
@@ -116,13 +116,13 @@
             this.dgvCompras.RowHeadersWidth = 51;
             this.dgvCompras.RowTemplate.Height = 24;
             this.dgvCompras.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCompras.Size = new System.Drawing.Size(389, 212);
+            this.dgvCompras.Size = new System.Drawing.Size(650, 212);
             this.dgvCompras.TabIndex = 6;
             this.dgvCompras.SelectionChanged += new System.EventHandler(this.dgvCompras_SelectionChanged);
             // 
             // btnNova
             // 
-            this.btnNova.Location = new System.Drawing.Point(605, 151);
+            this.btnNova.Location = new System.Drawing.Point(307, 353);
             this.btnNova.Name = "btnNova";
             this.btnNova.Size = new System.Drawing.Size(96, 29);
             this.btnNova.TabIndex = 7;
@@ -132,7 +132,7 @@
             // 
             // btnEditarVer
             // 
-            this.btnEditarVer.Location = new System.Drawing.Point(605, 227);
+            this.btnEditarVer.Location = new System.Drawing.Point(477, 353);
             this.btnEditarVer.Name = "btnEditarVer";
             this.btnEditarVer.Size = new System.Drawing.Size(96, 29);
             this.btnEditarVer.TabIndex = 8;
@@ -142,7 +142,7 @@
             // 
             // btnEliminar
             // 
-            this.btnEliminar.Location = new System.Drawing.Point(605, 303);
+            this.btnEliminar.Location = new System.Drawing.Point(635, 353);
             this.btnEliminar.Name = "btnEliminar";
             this.btnEliminar.Size = new System.Drawing.Size(96, 29);
             this.btnEliminar.TabIndex = 9;
@@ -162,7 +162,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1012, 581);
             this.Controls.Add(this.btnEliminar);
             this.Controls.Add(this.btnEditarVer);
             this.Controls.Add(this.btnNova);
